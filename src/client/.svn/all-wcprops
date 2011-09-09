@@ -1,0 +1,203 @@
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/MoopleDEV/!svn/ver/66/src/client
+END
+SkillMacro.java
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/MoopleDEV/!svn/ver/1/src/client/SkillMacro.java
+END
+MapleFamily.java
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/MoopleDEV/!svn/ver/104/src/client/MapleFamily.java
+END
+MapleKeyBinding.java
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/MoopleDEV/!svn/ver/1/src/client/MapleKeyBinding.java
+END
+MaplePet.java
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/MoopleDEV/!svn/ver/107/src/client/MaplePet.java
+END
+DiseaseValueHolder.java
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/MoopleDEV/!svn/ver/113/src/client/DiseaseValueHolder.java
+END
+PetDataFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/MoopleDEV/!svn/ver/108/src/client/PetDataFactory.java
+END
+MapleCharacter.java
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/MoopleDEV/!svn/ver/115/src/client/MapleCharacter.java
+END
+MapleInventory.java
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/MoopleDEV/!svn/ver/98/src/client/MapleInventory.java
+END
+Skill.java
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/MoopleDEV/!svn/ver/33/src/client/Skill.java
+END
+MapleRing.java
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/MoopleDEV/!svn/ver/98/src/client/MapleRing.java
+END
+MapleSkinColor.java
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/MoopleDEV/!svn/ver/1/src/client/MapleSkinColor.java
+END
+Equip.java
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/MoopleDEV/!svn/ver/101/src/client/Equip.java
+END
+MapleQuestStatus.java
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/MoopleDEV/!svn/ver/104/src/client/MapleQuestStatus.java
+END
+BuddylistEntry.java
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/MoopleDEV/!svn/ver/111/src/client/BuddylistEntry.java
+END
+ItemFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/MoopleDEV/!svn/ver/113/src/client/ItemFactory.java
+END
+ISkill.java
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/MoopleDEV/!svn/ver/33/src/client/ISkill.java
+END
+MapleStat.java
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/MoopleDEV/!svn/ver/58/src/client/MapleStat.java
+END
+IEquip.java
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/MoopleDEV/!svn/ver/100/src/client/IEquip.java
+END
+CharacterNameAndId.java
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/MoopleDEV/!svn/ver/1/src/client/CharacterNameAndId.java
+END
+MonsterBook.java
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/MoopleDEV/!svn/ver/88/src/client/MonsterBook.java
+END
+BuddyList.java
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/MoopleDEV/!svn/ver/111/src/client/BuddyList.java
+END
+SkillFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/MoopleDEV/!svn/ver/108/src/client/SkillFactory.java
+END
+IItem.java
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/MoopleDEV/!svn/ver/107/src/client/IItem.java
+END
+MapleWeaponType.java
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/MoopleDEV/!svn/ver/1/src/client/MapleWeaponType.java
+END
+MapleInventoryType.java
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/MoopleDEV/!svn/ver/11/src/client/MapleInventoryType.java
+END
+MapleMount.java
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/MoopleDEV/!svn/ver/91/src/client/MapleMount.java
+END
+MapleFamilyEntry.java
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/MoopleDEV/!svn/ver/104/src/client/MapleFamilyEntry.java
+END
+PetCommand.java
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/MoopleDEV/!svn/ver/1/src/client/PetCommand.java
+END
+MapleJob.java
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/MoopleDEV/!svn/ver/91/src/client/MapleJob.java
+END
+MapleDisease.java
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/MoopleDEV/!svn/ver/91/src/client/MapleDisease.java
+END
+MapleBuffStat.java
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/MoopleDEV/!svn/ver/113/src/client/MapleBuffStat.java
+END
+MapleClient.java
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/MoopleDEV/!svn/ver/115/src/client/MapleClient.java
+END
+Item.java
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/MoopleDEV/!svn/ver/107/src/client/Item.java
+END
