@@ -181,7 +181,7 @@ public class CommandProcessor {
                 BufferedReader dis = new BufferedReader(new InputStreamReader(new URL("http://www.mapletip.com/search_java.php?search_value=" + sub[1] + "&check=true").openConnection().getInputStream()));
                 String s;
                 while ((s = dis.readLine()) != null) {
-                    player.dropMessage(s);
+                    player.message(s);
                 }
                 dis.close();
             } catch (Exception e) {
@@ -220,7 +220,7 @@ public class CommandProcessor {
                 player.getMap().killMonster(monster, player, true);
                 monster.giveExpToCharacter(player, monster.getExp() * c.getPlayer().getExpRate(), true, 1);
             }
-            player.dropMessage("Killed " + monsters.size() + " monsters.");
+            player.message("Killed " + monsters.size() + " monsters.");
         } else if (sub[0].equals("unbug")) {
             c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.enableActions());
         } else if (sub[0].equals("level")) {
@@ -308,7 +308,7 @@ public class CommandProcessor {
                     for (MapleCharacter chr : ch.getPlayerStorage().getAllCharacters()) {
                         s += MapleCharacter.makeMapleReadable(chr.getName()) + ", ";
                     }
-                    player.dropMessage(s.substring(0, s.length() - 2));
+                    player.message(s.substring(0, s.length() - 2));
                 }
             }
         } else if (sub[0].equals("pap")) {
@@ -480,7 +480,7 @@ public class CommandProcessor {
                 PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(query);
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
-                    player.dropMessage(String.valueOf(rs.getObject(name)));
+                    player.message(String.valueOf(rs.getObject(name)));
                 }
                 rs.close();
                 ps.close();

@@ -149,12 +149,12 @@ public final class AdminCommandHandler extends AbstractMaplePacketHandler {
                 break;
             case 0x18: // Maple & Mobhp
                 int mobHp = slea.readInt();
-                c.getPlayer().dropMessage("Monsters HP");
+                c.getPlayer().message("Monsters HP");
                 List<MapleMapObject> monsters = c.getPlayer().getMap().getMapObjectsInRange(c.getPlayer().getPosition(), Double.POSITIVE_INFINITY, Arrays.asList(MapleMapObjectType.MONSTER));
                 for (MapleMapObject mobs : monsters) {
                     MapleMonster monster = (MapleMonster) mobs;
                     if (monster.getId() == mobHp) {
-                        c.getPlayer().dropMessage(monster.getName() + ": " + monster.getHp());
+                        c.getPlayer().message(monster.getName() + ": " + monster.getHp());
                     }
                 }
                 break;

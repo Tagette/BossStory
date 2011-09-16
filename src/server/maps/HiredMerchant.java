@@ -122,7 +122,7 @@ public class HiredMerchant extends AbstractMapleMapObject {
                 visitors[i].setHiredMerchant(null);
                 visitors[i].getClient().getSession().write(MaplePacketCreator.leaveHiredMerchant(i + 1, 0x11));                
                 if (message.length() > 0) {
-                    visitors[i].dropMessage(1, message);
+                    visitors[i].message(1, message);
                 }
                 visitors[i] = null;
             }
@@ -172,10 +172,10 @@ public class HiredMerchant extends AbstractMapleMapObject {
                         }
                     }
                 } else {
-                    c.getPlayer().dropMessage(1, "Your inventory is full. Please clean a slot before buying this item.");
+                    c.getPlayer().message(1, "Your inventory is full. Please clean a slot before buying this item.");
                 }
             } else {
-                c.getPlayer().dropMessage(1, "You do not have enough mesos.");
+                c.getPlayer().message(1, "You do not have enough mesos.");
             }
         try {
             this.saveItems(false);

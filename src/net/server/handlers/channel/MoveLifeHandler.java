@@ -21,13 +21,17 @@
 */
 package net.server.handlers.channel;
 
+import client.MapleCharacter;
 import java.awt.Point;
 import java.util.List;
 import client.MapleClient;
+import client.sskills.SSkillType;
+import java.util.Arrays;
 import tools.Randomizer;
 import server.life.MapleMonster;
 import server.life.MobSkill;
 import server.life.MobSkillFactory;
+import server.maps.MapleMap;
 import server.maps.MapleMapObject;
 import server.maps.MapleMapObjectType;
 import server.movement.LifeMovementFragment;
@@ -94,9 +98,31 @@ public final class MoveLifeHandler extends AbstractMovementPacketHandler {
             monster.setControllerKnowsAboutAggro(true);
         }
         if (res != null) {
-            c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.moveMonster(skillByte, skill, skill_1, skill_2, skill_3, skill_4, objectid, startPos, res), monster.getPosition());
+            MapleCharacter player = c.getPlayer();
+            MapleMap map = player.getMap();
+            
+            map.broadcastMessage(player, MaplePacketCreator.moveMonster(skillByte, skill, skill_1, skill_2, skill_3, skill_4, objectid, startPos, res), monster.getPosition());
             updatePosition(res, monster, -1);
-            c.getPlayer().getMap().moveMonster(monster, monster.getPosition());
+            map.moveMonster(monster, monster.getPosition());
+            
+            // Monster Charmer
+            
+            if(player.canCharmMonsters() && !monster.isBoss()){
+                int charmCount = player.getCharmCount();
+                if(charmCount > 0){
+                    double charmRange = player.getCharmRange();
+                    List<MapleMapObject> mobs = c.getPlayer().getMap().getClosestObjectsToPointInRange(c.getPlayer().getPosition(), charmCount, charmRange, Arrays.asList(MapleMapObjectType.MONSTER));
+                    for(MapleMapObject mob : mobs){
+                        MapleMonster mon = (MapleMonster) mob;
+                        if(!mon.isBoss()){
+                            map.broadcastMessage(player, MaplePacketCreator.moveMonster(skillByte, skill, skill_1, skill_2, skill_3, skill_4, mon.getObjectId(), startPos, res), monster.getPosition());
+                            updatePosition(res, mon, -1);
+                            map.moveMonster(mon, monster.getPosition());
+                        }
+                    }
+                    player.addSSkillExp(SSkillType.MONSTER_CHARMER, 5 + (charmCount / 2));
+                }
+            }
         }
     }
 }

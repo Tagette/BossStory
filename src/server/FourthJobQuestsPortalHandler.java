@@ -50,16 +50,16 @@ public class FourthJobQuestsPortalHandler {
     public static boolean handlePortal(String name, MapleCharacter c) {
         if (name.equals(FourthJobQuests.RUSH.getValue())) {
             if (!(c.getParty().getLeader().getId() == c.getId()) && !checkRush(c)) {
-                c.dropMessage("You step into the portal, but it swiftly kicks you out.");
+                c.message("You step into the portal, but it swiftly kicks you out.");
                 c.getClient().announce(MaplePacketCreator.enableActions());
             }
             if (!(c.getParty().getLeader().getId() == c.getId()) && checkRush(c)) {
-                c.dropMessage("You're not the party leader.");
+                c.message("You're not the party leader.");
                 c.getClient().announce(MaplePacketCreator.enableActions());
                 return true;
             }
             if (!checkRush(c)) {
-                c.dropMessage("Someone in your party is not a 4th Job warrior.");
+                c.message("Someone in your party is not a 4th Job warrior.");
                 c.getClient().announce(MaplePacketCreator.enableActions());
                 return true;
             }
@@ -67,7 +67,7 @@ public class FourthJobQuestsPortalHandler {
             return true;
         } else if (name.equals(FourthJobQuests.BERSERK.getValue())) {
             if (!c.haveItem(4031475)) {
-                c.dropMessage("The portal to the Forgotten Shrine is locked");
+                c.message("The portal to the Forgotten Shrine is locked");
                 c.getClient().announce(MaplePacketCreator.enableActions());
                 return true;
             }

@@ -271,7 +271,7 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
                     if (player.getLevel() > 9) {
                         player.getClient().getChannelServer().broadcastPacket(MaplePacketCreator.serverNotice(2, medal + player.getName() + " : " + slea.readMapleAsciiString()));
                     } else {
-                        player.dropMessage(1, "You may not use this until you're level 10.");
+                        player.message(1, "You may not use this until you're level 10.");
                     }
                     break;
                 case 2: // Super megaphone
@@ -313,7 +313,7 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
                         new MapleTVEffect(player, victim, messages, tvType, c.getWorld());
                         remove(c, itemId);
                     } else {
-                        player.dropMessage(1, "MapleTV is already in use.");
+                        player.message(1, "MapleTV is already in use.");
                         return;
                     }
                     break;
@@ -327,7 +327,7 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
                         {
                             return;
                         } else if (ii.isDropRestricted(item.getItemId())) { //Lol?
-                            player.dropMessage(1, "You cannot trade this item.");
+                            player.message(1, "You cannot trade this item.");
                             c.announce(MaplePacketCreator.enableActions());
                             return;
                         }
@@ -395,7 +395,7 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
                     player.changeMap(c.getChannelServer().getMapFactory().getMap(mapId));
                 } else {
                     MapleInventoryManipulator.addById(c, itemId, (short) 1);
-                    c.getPlayer().dropMessage(1, error1);
+                    c.getPlayer().message(1, error1);
                     c.announce(MaplePacketCreator.enableActions());
                 }
             } else {
@@ -410,16 +410,16 @@ public final class UseCashItemHandler extends AbstractMaplePacketHandler {
                                 player.changeMap(target, target.findClosestSpawnpoint(victim.getPosition()));
                                 success = true;
                             } else {
-                                player.dropMessage(1, error1);
+                                player.message(1, error1);
                             }
                         } else {
-                            player.dropMessage(1, error1);
+                            player.message(1, error1);
                         }
                     } else {
-                        player.dropMessage(1, "You cannot teleport to this map.");
+                        player.message(1, "You cannot teleport to this map.");
                     }
                 } else {
-                    player.dropMessage(1, "Player could not be found in this channel.");
+                    player.message(1, "Player could not be found in this channel.");
                 }
                 if (!success) {
                     MapleInventoryManipulator.addById(c, itemId, (short) 1);

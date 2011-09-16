@@ -165,7 +165,7 @@ public class AbstractPlayerInteraction {
             MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
             IItem item = ii.getEquipById(id);
             if (!MapleInventoryManipulator.checkSpace(c, id, quantity, "")) {
-                c.getPlayer().dropMessage(1, "Your inventory is full. Please remove an item from your " + ii.getInventoryType(id).name() + " inventory.");
+                c.getPlayer().message(1, "Your inventory is full. Please remove an item from your " + ii.getInventoryType(id).name() + " inventory.");
                 return;
             }
             if (ii.getInventoryType(id).equals(MapleInventoryType.EQUIP) && !ItemConstants.isRechargable(item.getItemId())) {

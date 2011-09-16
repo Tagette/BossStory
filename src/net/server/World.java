@@ -48,7 +48,8 @@ import tools.MaplePacketCreator;
  * @author kevintjuh93
  */
 public class World {
-    private byte id, flag, exprate, droprate, mesorate, bossdroprate;
+    private byte id, flag;
+    short exprate, droprate, mesorate, bossdroprate;
     private String eventmsg;
     private List<Channel> channels = new ArrayList<Channel>();
 
@@ -61,7 +62,7 @@ public class World {
 
     private PlayerStorage players = new PlayerStorage();
 
-    public World(byte world, byte flag, String eventmsg, byte exprate, byte droprate, byte mesorate, byte bossdroprate) {
+    public World(byte world, byte flag, String eventmsg, short exprate, short droprate, short mesorate, short bossdroprate) {
         this.id = world;
         this.flag = flag;
         this.eventmsg = eventmsg;
@@ -101,7 +102,7 @@ public class World {
         return eventmsg;
     }
 
-    public byte getExpRate() {
+    public short getExpRate() {
         return exprate;
     }
 
@@ -109,15 +110,15 @@ public class World {
         this.exprate = exp;
     }
 
-    public byte getDropRate() {
+    public short getDropRate() {
         return droprate;
     }
     
-    public byte getMesoRate() {
+    public short getMesoRate() {
         return mesorate;
     }
     
-    public byte getBossDropRate() {
+    public short getBossDropRate() {
         return bossdroprate;
     }
 

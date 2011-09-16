@@ -101,16 +101,16 @@ public final class GuildOperationHandler extends AbstractMaplePacketHandler {
                 break;
             case 0x02:
                 if (mc.getGuildId() > 0 || mc.getMapId() != 200000301) {
-                    c.getPlayer().dropMessage(1, "You cannot create a new Guild while in one.");
+                    c.getPlayer().message(1, "You cannot create a new Guild while in one.");
                     return;
                 }
                 if (mc.getMeso() < MapleGuild.CREATE_GUILD_COST) {
-                    c.getPlayer().dropMessage(1, "You do not have enough mesos to create a Guild.");
+                    c.getPlayer().message(1, "You do not have enough mesos to create a Guild.");
                     return;
                 }
                 String guildName = slea.readMapleAsciiString();
                 if (!isGuildNameAcceptable(guildName)) {
-                    c.getPlayer().dropMessage(1, "The Guild name you have chosen is not accepted.");
+                    c.getPlayer().message(1, "The Guild name you have chosen is not accepted.");
                     return;
                 }
                 int gid;
@@ -125,7 +125,7 @@ public final class GuildOperationHandler extends AbstractMaplePacketHandler {
                 mc.setGuildRank(1);
                 mc.saveGuildStatus();
                 c.announce(MaplePacketCreator.showGuildInfo(mc));
-                c.getPlayer().dropMessage(1, "You have successfully created a Guild.");
+                c.getPlayer().message(1, "You have successfully created a Guild.");
                 respawnPlayer(mc);
                 break;
             case 0x05:
@@ -175,7 +175,7 @@ public final class GuildOperationHandler extends AbstractMaplePacketHandler {
                 
                 s = Server.getInstance().addGuildMember(mc.getMGC());
                 if (s == 0) {
-                    c.getPlayer().dropMessage(1, "The Guild you are trying to join is already full.");
+                    c.getPlayer().message(1, "The Guild you are trying to join is already full.");
                     mc.setGuildId(0);
                     return;
                 }

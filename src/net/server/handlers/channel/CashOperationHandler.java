@@ -206,7 +206,7 @@ public final class CashOperationHandler extends AbstractMaplePacketHandler {
                     chr.getClient().announce(MaplePacketCreator.serverNotice(1, "The partner you specified cannot be found.\r\nPlease make sure your partner is online and in the same channel."));
                 } else {
                     if (partner.getGender() == chr.getGender()) {
-                        chr.dropMessage("You and your partner are the same gender, please buy a friendship ring.");
+                        chr.message("You and your partner are the same gender, please buy a friendship ring.");
                         return;
                     }
                     IEquip item = (IEquip) ring.toItem();
@@ -224,7 +224,7 @@ public final class CashOperationHandler extends AbstractMaplePacketHandler {
                     partner.showNote();
                 }
             } else {
-                chr.dropMessage("The birthday you entered was incorrect.");
+                chr.message("The birthday you entered was incorrect.");
             }
             c.announce(MaplePacketCreator.showCash(c.getPlayer()));
         } else if (action == 0x20) { // everything is 1 meso...
@@ -249,7 +249,7 @@ public final class CashOperationHandler extends AbstractMaplePacketHandler {
                 slea.readByte();
                 MapleCharacter partner = c.getChannelServer().getPlayerStorage().getCharacterByName(sentTo);
                 if (partner == null) {
-                    chr.dropMessage("The partner you specified cannot be found.\r\nPlease make sure your partner is online and in the same channel.");
+                    chr.message("The partner you specified cannot be found.\r\nPlease make sure your partner is online and in the same channel.");
                 } else {
                     IEquip item = (IEquip) ring.toItem();
                     int ringid = MapleRing.createRing(ring.getItemId(), chr, partner);
@@ -266,7 +266,7 @@ public final class CashOperationHandler extends AbstractMaplePacketHandler {
                     partner.showNote();
                 }
             } else {
-                chr.dropMessage("The birthday you entered was incorrect.");
+                chr.message("The birthday you entered was incorrect.");
             }
             c.announce(MaplePacketCreator.showCash(c.getPlayer()));
         } else {

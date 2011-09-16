@@ -43,19 +43,19 @@ public final class RingActionHandler extends AbstractMaplePacketHandler {
                 String partnerName = slea.readMapleAsciiString();
                 MapleCharacter partner = c.getChannelServer().getPlayerStorage().getCharacterByName(partnerName);
                 if (partnerName.equalsIgnoreCase(player.getName())) {
-                    c.getPlayer().dropMessage(1, "You cannot put your own name in it.");
+                    c.getPlayer().message(1, "You cannot put your own name in it.");
                     return;
                 } else if (partner == null) {
-                    c.getPlayer().dropMessage(1, partnerName + " was not found on this channel. If you are both logged in, please make sure you are in the same channel.");
+                    c.getPlayer().message(1, partnerName + " was not found on this channel. If you are both logged in, please make sure you are in the same channel.");
                     return;
                 } else if (partner.getGender() == player.getGender()) {
-                    c.getPlayer().dropMessage(1, "Your partner is the same gender as you.");
+                    c.getPlayer().message(1, "Your partner is the same gender as you.");
                     return;
                 } //else if (player.isMarried() && partner.isMarried())
                 // NPCScriptManager.getInstance().start(partner.getClient(), 9201002, "marriagequestion", player);
                 break;
             case 1: //Cancel send
-                c.getPlayer().dropMessage(1, "You've cancelled the request.");
+                c.getPlayer().message(1, "You've cancelled the request.");
                 boolean accepted = slea.readByte() > 0;
                 String proposerName = slea.readMapleAsciiString();
                 if (accepted) {

@@ -142,7 +142,7 @@ public class MapleQuestAction {
                             MapleInventoryManipulator.addById(c.getClient(), itemId, quantity);
                             c.getClient().getSession().write(MaplePacketCreator.getShowItemGain(itemId, quantity, true));
                         } else {
-                            c.dropMessage(1, "Inventory Full");
+                            c.message(1, "Inventory Full");
                         }
                     }
                 }

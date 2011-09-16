@@ -1,24 +1,24 @@
 /*
-	This file is part of the OdinMS Maple Story Server
-    Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc>
-		       Matthias Butz <matze@odinms.de>
-		       Jan Christian Meyer <vimes@odinms.de>
+This file is part of the OdinMS Maple Story Server
+Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc>
+Matthias Butz <matze@odinms.de>
+Jan Christian Meyer <vimes@odinms.de>
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation version 3 as published by
-    the Free Software Foundation. You may not use, modify or distribute
-    this program under any other version of the GNU Affero General Public
-    License.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation version 3 as published by
+the Free Software Foundation. You may not use, modify or distribute
+this program under any other version of the GNU Affero General Public
+License.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package net.server.handlers.channel;
 
 import java.util.List;
@@ -31,6 +31,7 @@ import client.MapleInventory;
 import client.MapleInventoryType;
 import client.IEquip.ScrollResult;
 import client.ISkill;
+import client.sskills.SSkillType;
 import net.AbstractMaplePacketHandler;
 import server.MapleItemInformationProvider;
 import tools.MaplePacketCreator;
@@ -41,6 +42,7 @@ import tools.data.input.SeekableLittleEndianAccessor;
  * @author Frz
  */
 public final class ScrollHandler extends AbstractMaplePacketHandler {
+
     public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
         slea.readInt(); // whatever...
         byte slot = (byte) slea.readShort();
@@ -85,33 +87,58 @@ public final class ScrollHandler extends AbstractMaplePacketHandler {
         if (scroll.getQuantity() < 1) {
             return;
         }
-        IEquip scrolled = (IEquip) ii.scrollEquipWithId(toScroll, scroll.getItemId(), whiteScroll, c.getPlayer().isGM());
-        ScrollResult scrollSuccess = IEquip.ScrollResult.FAIL; // fail
-        if (scrolled == null) {
-            scrollSuccess = IEquip.ScrollResult.CURSE;
-        } else if (scrolled.getLevel() > oldLevel || (isCleanSlate(scroll.getItemId()) && scrolled.getLevel() == oldLevel + 1)) {
-            scrollSuccess = IEquip.ScrollResult.SUCCESS;
-        }
-        useInventory.removeItem(scroll.getPosition(), (short) 1, false);
-        if (whiteScroll) {
-            useInventory.removeItem(wscroll.getPosition(), (short) 1, false);
-            if (wscroll.getQuantity() < 1) {
-                c.announce(MaplePacketCreator.clearInventoryItem(MapleInventoryType.USE, wscroll.getPosition(), false));
-            } else {
-                c.announce(MaplePacketCreator.updateInventorySlot(MapleInventoryType.USE, (Item) wscroll));
+        IEquip scrolled = null;
+        ScrollResult scrollSuccess = null;
+        int sExpAdd = 0;
+        int scrollMulti = c.getPlayer().getScrollMulti();
+        int initMulti = scrollMulti;
+        while (scroll.getQuantity() > 0 && scrollMulti > 0) {
+            if(scrollMulti > 1){
+                sExpAdd++;
             }
-        }
-        if (scrollSuccess == IEquip.ScrollResult.CURSE) {
-            c.announce(MaplePacketCreator.scrolledItem(scroll, toScroll, true));
-            if (dst < 0) {
-                c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).removeItem(toScroll.getPosition());
-            } else {
-                c.getPlayer().getInventory(MapleInventoryType.EQUIP).removeItem(toScroll.getPosition());
+            scrollMulti--;
+            boolean removeSlot = c.getPlayer().getScrollSlotRemove();
+            if(!removeSlot)
+                sExpAdd++;
+            int scrollRerolls = c.getPlayer().getScrollRerolls();
+            sExpAdd += scrollRerolls;
+            int statMultiplier = c.getPlayer().getScrollStatMultiplier();
+            if(statMultiplier > 1){
+                sExpAdd += statMultiplier;
             }
-        } else {
-            c.announce(MaplePacketCreator.scrolledItem(scroll, scrolled, false));
+            scrolled = (IEquip) ii.scrollEquipWithId(toScroll, scroll.getItemId(),
+                    whiteScroll, removeSlot, scrollRerolls, statMultiplier,
+                    c.getPlayer().isGM());
+            scrollSuccess = IEquip.ScrollResult.FAIL; // fail
+            if (scrolled == null) {
+                scrollSuccess = IEquip.ScrollResult.CURSE;
+            } else if (scrolled.getLevel() > oldLevel
+                    || (isCleanSlate(scroll.getItemId()) && scrolled.getLevel() == oldLevel + 1)) {
+                scrollSuccess = IEquip.ScrollResult.SUCCESS;
+            }
+            useInventory.removeItem(scroll.getPosition(), (short) 1, false);
+            if (whiteScroll) {
+                useInventory.removeItem(wscroll.getPosition(), (short) 1, false);
+                if (wscroll.getQuantity() < 1) {
+                    c.announce(MaplePacketCreator.clearInventoryItem(MapleInventoryType.USE, wscroll.getPosition(), false));
+                } else {
+                    c.announce(MaplePacketCreator.updateInventorySlot(MapleInventoryType.USE, (Item) wscroll));
+                }
+            }
+            if (scrollSuccess == IEquip.ScrollResult.CURSE) {
+                c.announce(MaplePacketCreator.scrolledItem(scroll, toScroll, true));
+                if (dst < 0) {
+                    c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).removeItem(toScroll.getPosition());
+                } else {
+                    c.getPlayer().getInventory(MapleInventoryType.EQUIP).removeItem(toScroll.getPosition());
+                }
+            } else {
+                c.announce(MaplePacketCreator.scrolledItem(scroll, scrolled, false));
+            }
+            c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getScrollEffect(c.getPlayer().getId(), scrollSuccess, legendarySpirit));
         }
-        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getScrollEffect(c.getPlayer().getId(), scrollSuccess, legendarySpirit));
+        sExpAdd /= initMulti;
+        c.getPlayer().addSSkillExp(SSkillType.ENCHANTMENT, sExpAdd);
         if (dst < 0 && (scrollSuccess == IEquip.ScrollResult.SUCCESS || scrollSuccess == IEquip.ScrollResult.CURSE)) {
             c.getPlayer().equipChanged();
         }

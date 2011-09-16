@@ -279,7 +279,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     }
 
     public MapleCharacter killBy(MapleCharacter killer) {
-        long totalBaseExpL = (this.getExp() * killer.getClient().getPlayer().getExpRate());
+        long totalBaseExpL = (this.getExp() * killer.getExpRate());
         int totalBaseExp = (int) (Math.min(Integer.MAX_VALUE, totalBaseExpL));
         AttackerEntry highest = null;
         int highdamage = 0;

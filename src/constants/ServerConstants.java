@@ -41,10 +41,42 @@ public class ServerConstants {
     // IP Configuration
     public static final String HOST = "localhost";
     //Database Configuration
-    public static final String DB_URL = "jdbc:mysql://192.168.1.10:3306/BossStory?autoReconnect=true";
+    public static final String DB_URL = "jdbc:mysql://96.53.111.250:3306/BossStory?autoReconnect=true";
     public static final String DB_USER = "Tristan";
-    public static final String DB_PASS = "smorgasbord82";
+    public static final String DB_PASS = "smorgabsord82";
     
     public static final int REBIRTH_LEVEL = 200;
     public static final int KOC_REBIRTH_LEVEL = 200;
+    public static final int MAX_LEVEL = 250;
+    
+    // Secondary SKills
+    
+    public static boolean ALLOW_SSKILLS = true;
+
+    public static boolean ALLOW_POLITICS = true;
+    public static boolean ALLOW_SKINNING = true;
+    public static boolean ALLOW_MAGNETO = true;
+    public static boolean ALLOW_MONSTER_CHARMER = true;
+    public static boolean ALLOW_ENCHANTMENT = true;
+    public static boolean ALLOW_NECROMANCY = true;
+    public static boolean ALLOW_BREEDING = true;
+    public static boolean ALLOW_THIEVERY = true;
+    public static boolean ALLOW_FARMING = true;
+    public static boolean ALLOW_ALCHEMY = true;
+    public static boolean ALLOW_FLASH_JUMP = true;
+    public static boolean ALLOW_EXP_RATE = true;
+    public static boolean ALLOW_MESO_RATE = true;
+    public static boolean ALLOW_DROP_RATE = true;
+    
+    public static final int EXP_POT_ID = 2022157;
+    public static final int MESO_POT_ID = 2022158;
+    public static final int DROP_POT_ID = 2022159;
+    
+    public static final int EXP_CARD_ID = 5211000;
+    public static final int DROP_CARD_ID = 5360042;
+    
+    public static final int EXP_INCREMENT = 65;
+    public static final int MESO_INCREMENT = 40;
+    public static final int DROP_INCREMENT = 10;
+    
 }

@@ -445,12 +445,17 @@ public class MapleItemInformationProvider {
         return scrollId > 2048999 && scrollId < 2049004;
     }
 
-    public IItem scrollEquipWithId(IItem equip, int scrollId, boolean usingWhiteScroll, boolean isGM) {
+    public IItem scrollEquipWithId(IItem equip, int scrollId, boolean usingWhiteScroll, boolean removeSlot, int rerolls, int multiplier, boolean isGM) {
         if (equip instanceof Equip) {
             Equip nEquip = (Equip) equip;
             Map<String, Integer> stats = this.getEquipStats(scrollId);
             Map<String, Integer> eqstats = this.getEquipStats(equip.getItemId());
-            if (((nEquip.getUpgradeSlots() > 0 || isCleanSlate(scrollId)) && Math.ceil(Math.random() * 100.0) <= stats.get("success")) || isGM) {
+            boolean success = true;
+            while(!success && rerolls + 1 > 0){
+                rerolls--;
+                success = Math.ceil(Math.random() * 100.0) <= stats.get("success");
+            }
+            if (((nEquip.getUpgradeSlots() > 0 || isCleanSlate(scrollId)) && success) || isGM) {
                 short flag = nEquip.getFlag();
                 switch (scrollId) {
                     case 2040727:
@@ -472,9 +477,9 @@ public class MapleItemInformationProvider {
                     case 2049100:
                     case 2049101:
                     case 2049102:
-                        int inc = 1;
+                        int inc = 1 * multiplier;
                         if (Randomizer.nextInt(2) == 0) {
-                            inc = -1;
+                            inc = -1 * multiplier;
                         }
                         if (nEquip.getStr() > 0) {
                             nEquip.setStr((short) Math.max(0, (nEquip.getStr() + Randomizer.nextInt(6) * inc)));
@@ -522,46 +527,46 @@ public class MapleItemInformationProvider {
                     default:
                         for (Entry<String, Integer> stat : stats.entrySet()) {
                             if (stat.getKey().equals("STR")) {
-                                nEquip.setStr((short) (nEquip.getStr() + stat.getValue().intValue()));
+                                nEquip.setStr((short) (nEquip.getStr() + (stat.getValue().intValue() * multiplier)));
                             } else if (stat.getKey().equals("DEX")) {
-                                nEquip.setDex((short) (nEquip.getDex() + stat.getValue().intValue()));
+                                nEquip.setDex((short) (nEquip.getDex() + (stat.getValue().intValue() * multiplier)));
                             } else if (stat.getKey().equals("INT")) {
-                                nEquip.setInt((short) (nEquip.getInt() + stat.getValue().intValue()));
+                                nEquip.setInt((short) (nEquip.getInt() + (stat.getValue().intValue() * multiplier)));
                             } else if (stat.getKey().equals("LUK")) {
-                                nEquip.setLuk((short) (nEquip.getLuk() + stat.getValue().intValue()));
+                                nEquip.setLuk((short) (nEquip.getLuk() + (stat.getValue().intValue() * multiplier)));
                             } else if (stat.getKey().equals("PAD")) {
-                                nEquip.setWatk((short) (nEquip.getWatk() + stat.getValue().intValue()));
+                                nEquip.setWatk((short) (nEquip.getWatk() + (stat.getValue().intValue() * multiplier)));
                             } else if (stat.getKey().equals("PDD")) {
-                                nEquip.setWdef((short) (nEquip.getWdef() + stat.getValue().intValue()));
+                                nEquip.setWdef((short) (nEquip.getWdef() + (stat.getValue().intValue() * multiplier)));
                             } else if (stat.getKey().equals("MAD")) {
-                                nEquip.setMatk((short) (nEquip.getMatk() + stat.getValue().intValue()));
+                                nEquip.setMatk((short) (nEquip.getMatk() + (stat.getValue().intValue() * multiplier)));
                             } else if (stat.getKey().equals("MDD")) {
-                                nEquip.setMdef((short) (nEquip.getMdef() + stat.getValue().intValue()));
+                                nEquip.setMdef((short) (nEquip.getMdef() + (stat.getValue().intValue() * multiplier)));
                             } else if (stat.getKey().equals("ACC")) {
-                                nEquip.setAcc((short) (nEquip.getAcc() + stat.getValue().intValue()));
+                                nEquip.setAcc((short) (nEquip.getAcc() + (stat.getValue().intValue() * multiplier)));
                             } else if (stat.getKey().equals("EVA")) {
-                                nEquip.setAvoid((short) (nEquip.getAvoid() + stat.getValue().intValue()));
+                                nEquip.setAvoid((short) (nEquip.getAvoid() + (stat.getValue().intValue() * multiplier)));
                             } else if (stat.getKey().equals("Speed")) {
-                                nEquip.setSpeed((short) (nEquip.getSpeed() + stat.getValue().intValue()));
+                                nEquip.setSpeed((short) (nEquip.getSpeed() + (stat.getValue().intValue() * multiplier)));
                             } else if (stat.getKey().equals("Jump")) {
-                                nEquip.setJump((short) (nEquip.getJump() + stat.getValue().intValue()));
+                                nEquip.setJump((short) (nEquip.getJump() + (stat.getValue().intValue() * multiplier)));
                             } else if (stat.getKey().equals("MHP")) {
-                                nEquip.setHp((short) (nEquip.getHp() + stat.getValue().intValue()));
+                                nEquip.setHp((short) (nEquip.getHp() + (stat.getValue().intValue() * multiplier)));
                             } else if (stat.getKey().equals("MMP")) {
-                                nEquip.setMp((short) (nEquip.getMp() + stat.getValue().intValue()));
+                                nEquip.setMp((short) (nEquip.getMp() + (stat.getValue().intValue() * multiplier)));
                             } else if (stat.getKey().equals("afterImage")) {
                             }
                         }
                         break;
                 }
                 if (!isCleanSlate(scrollId)) {
-                    if (!isGM) {
+                    if (removeSlot) {
                         nEquip.setUpgradeSlots((byte) (nEquip.getUpgradeSlots() - 1));
                     }
                     nEquip.setLevel((byte) (nEquip.getLevel() + 1));
                 }
             } else {
-                if (!usingWhiteScroll && !isCleanSlate(scrollId) && !isGM) {
+                if (!usingWhiteScroll && !isCleanSlate(scrollId) && removeSlot) {
                     nEquip.setUpgradeSlots((byte) (nEquip.getUpgradeSlots() - 1));
                 }
                 if (Randomizer.nextInt(101) < stats.get("cursed")) {

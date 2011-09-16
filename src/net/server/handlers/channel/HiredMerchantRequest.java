@@ -49,10 +49,10 @@ public final class HiredMerchantRequest extends AbstractMaplePacketHandler {
                 } catch (SQLException ex) {
                 }
             } else {
-                chr.dropMessage(1, "You already have a store open.");
+                chr.message(1, "You already have a store open.");
             }
         } else {
-            chr.dropMessage(1, "You cannot open your hired merchant here.");
+            chr.message(1, "You cannot open your hired merchant here.");
         }
     }
 }

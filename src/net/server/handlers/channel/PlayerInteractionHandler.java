@@ -185,7 +185,7 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                 if (ob instanceof MaplePlayerShop) {
                     MaplePlayerShop shop = (MaplePlayerShop) ob;
                     if (shop.isBanned(chr.getName())) {
-                        chr.dropMessage(1, "You have been banned from this store.");
+                        chr.message(1, "You have been banned from this store.");
                         return;
                     }
                     if (shop.hasFreeSlot() && !shop.isVisitor(c.getPlayer())) {
@@ -213,10 +213,10 @@ public final class PlayerInteractionHandler extends AbstractMaplePacketHandler {
                         merchant.removeAllVisitors("");
                         c.announce(MaplePacketCreator.getHiredMerchant(chr, merchant, false));
                     } else if (!merchant.isOpen()) {
-                        chr.dropMessage(1, "This shop is in maintenance, please come by later.");
+                        chr.message(1, "This shop is in maintenance, please come by later.");
                         return;
                     } else if (merchant.getFreeSlot() == -1) {
-                        chr.dropMessage(1, "This shop has reached it's maximum capacity, please come by later.");
+                        chr.message(1, "This shop has reached it's maximum capacity, please come by later.");
                         return;
                     } else {
                         merchant.addVisitor(c.getPlayer());

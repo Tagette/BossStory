@@ -118,6 +118,9 @@ public class Server implements Runnable {
             System.out.println("Please start create_server.bat");
             System.exit(0);
         }
+        if(System.getProperty("wzpath") == null){
+        	System.setProperty("wzpath", "wz");
+        }
         DatabaseConnection.getConnection();
         IoBuffer.setUseDirectBuffer(false);
         IoBuffer.setAllocator(new SimpleBufferAllocator());
@@ -134,10 +137,10 @@ public class Server implements Runnable {
                 World world = new World(i,
                         Byte.parseByte(p.getProperty("flag" + i)),
                         p.getProperty("eventmessage" + i),
-                        Byte.parseByte(p.getProperty("exprate" + i)),
-                        Byte.parseByte(p.getProperty("droprate" + i)),
-                        Byte.parseByte(p.getProperty("mesorate" + i)),
-                        Byte.parseByte(p.getProperty("bossdroprate" + i)));//ohlol
+                        Short.parseShort(p.getProperty("exprate" + i)),
+                        Short.parseShort(p.getProperty("droprate" + i)),
+                        Short.parseShort(p.getProperty("mesorate" + i)),
+                        Short.parseShort(p.getProperty("bossdroprate" + i)));
 
                 worlds.add(world);
                 channels.add(new LinkedHashMap<Byte, String>());

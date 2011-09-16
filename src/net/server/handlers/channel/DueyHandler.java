@@ -179,7 +179,7 @@ public final class DueyHandler extends AbstractMaplePacketHandler {
             }
             if (dp.getItem() != null) {
                 if (!MapleInventoryManipulator.checkSpace(c, dp.getItem().getItemId(), dp.getItem().getQuantity(), dp.getItem().getOwner())) {
-                    c.getPlayer().dropMessage(1, "Your inventory is full");
+                    c.getPlayer().message(1, "Your inventory is full");
                     c.announce(MaplePacketCreator.enableActions());
                     return;
                 } else {

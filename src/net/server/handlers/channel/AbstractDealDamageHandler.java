@@ -129,6 +129,8 @@ public abstract class AbstractDealDamageHandler extends AbstractMaplePacketHandl
                 player.getClient().announce(MaplePacketCreator.enableActions());
                 return;
             }
+            
+            player.AttackWasMelee(attackEffect.isSkill());
 
             if (player.getMp() < attackEffect.getMpCon())
                 AutobanFactory.MPCON.addPoint(player.getAutobanManager(), "Skill: " + attack.skill + "; Player MP: " + player.getMp() + "; MP Needed: " + attackEffect.getMpCon());

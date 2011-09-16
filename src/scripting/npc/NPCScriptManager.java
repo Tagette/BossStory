@@ -120,6 +120,6 @@ public class NPCScriptManager extends AbstractScriptManager {
     }
 
     private void notice(MapleClient c, int id) {
-        c.getPlayer().dropMessage(1, "This NPC is not working properly. Please report it. NPCID: " + id);
+        c.getPlayer().message(1, "This NPC is not working properly. Please report it. NPCID: " + id);
     }
 }

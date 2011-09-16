@@ -105,7 +105,7 @@ public final class MTSHandler extends AbstractMaplePacketHandler {
                         ResultSet rs = ps.executeQuery();
                         if (rs.next()) {
                             if (rs.getInt(1) > 10) { //They have more than 10 items up for sale already!
-                                c.getPlayer().dropMessage(1, "You already have 10 items up for auction!");
+                                c.getPlayer().message(1, "You already have 10 items up for auction!");
                                 c.announce(getMTS(1, 0, 0));
                                 c.announce(MaplePacketCreator.transferInventory(getTransfer(c.getPlayer().getId())));
                                 c.announce(MaplePacketCreator.notYetSoldInv(getNotYetSold(c.getPlayer().getId())));

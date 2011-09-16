@@ -38,15 +38,17 @@ public final class MonsterBook {
     private Map<Integer, Integer> cards = new LinkedHashMap<Integer, Integer>();
 
     public void addCard(final MapleClient c, final int cardid) {
-        c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.showForeginCardEffect(c.getPlayer().getId()), false);
+        //c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.showForeginCardEffect(c.getPlayer().getId()), false);
         for (Entry<Integer, Integer> all : cards.entrySet()) {
             if (all.getKey() == cardid) {
                 if (all.getValue() > 4) {
+                    c.getPlayer().message("Congratulations you have completed a monster card set!");
                     c.getSession().write(MaplePacketCreator.addCard(true, cardid, all.getValue()));
                 } else {
                     all.setValue(all.getValue() + 1);
+                    c.getPlayer().message("You have recieved a monster card!");
                     c.getSession().write(MaplePacketCreator.addCard(false, cardid, all.getValue()));
-                    c.getSession().write(MaplePacketCreator.showGainCard());
+                    //c.getSession().write(MaplePacketCreator.showGainCard());
                     calculateLevel();
                 }
                 return;

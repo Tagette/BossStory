@@ -55,7 +55,7 @@ public final class SpawnPetHandler extends AbstractMaplePacketHandler {
         if (petid == 5000028 || petid == 5000047) //Handles Dragon AND Robos
         {
             if (chr.haveItem(petid + 1)) {
-                chr.dropMessage(5, "You can't hatch your " + (petid == 5000028 ? "Dragon egg" : "Robo egg") + " if you already have a Baby " + (petid == 5000028 ? "Dragon." : "Robo."));
+                chr.message(5, "You can't hatch your " + (petid == 5000028 ? "Dragon egg" : "Robo egg") + " if you already have a Baby " + (petid == 5000028 ? "Dragon." : "Robo."));
                 c.getSession().write(MaplePacketCreator.enableActions());
                 return;
             } else {

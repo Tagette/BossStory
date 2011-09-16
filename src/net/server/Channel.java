@@ -75,6 +75,7 @@ public class Channel {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
+            	System.out.println("Saving Characters...");
                     for (MapleCharacter mc : getPlayerStorage().getAllCharacters()) {
                         mc.saveToDB(true);
                         if (mc.getHiredMerchant() != null) {
@@ -227,7 +228,7 @@ public class Channel {
 
     public void worldMessage(String msg) {
         for (MapleCharacter mc : getPlayerStorage().getAllCharacters()) {
-            mc.dropMessage(msg);
+            mc.message(msg);
         }
     }
 

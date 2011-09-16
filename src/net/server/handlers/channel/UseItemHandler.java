@@ -21,14 +21,17 @@
 */
 package net.server.handlers.channel;
 
+import constants.ServerConstants;
 import client.IItem;
 import client.MapleClient;
 import client.MapleDisease;
 import client.MapleInventoryType;
+import client.sskills.SSkillType;
 import net.AbstractMaplePacketHandler;
 import server.MapleInventoryManipulator;
 import server.MapleItemInformationProvider;
 import tools.MaplePacketCreator;
+import tools.Randomizer;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 /**
@@ -62,6 +65,20 @@ public final class UseItemHandler extends AbstractMaplePacketHandler {
                 c.announce(MaplePacketCreator.enableActions());
                 return;
             }
+            if(itemId == ServerConstants.EXP_POT_ID && c.getPlayer().canUseExpRate()){
+            	c.getPlayer().addSSkillExp(SSkillType.EXP_RATE, Randomizer.nextInt(5) + 1);
+                remove(c, slot);
+                return;
+            } else if(itemId == ServerConstants.MESO_POT_ID && c.getPlayer().canUseMesoRate()){
+            	c.getPlayer().addSSkillExp(SSkillType.MESO_RATE, Randomizer.nextInt(5) + 1);
+                remove(c, slot);
+                return;
+            } else if(itemId == ServerConstants.DROP_POT_ID && c.getPlayer().canUseDropRate()){
+            	c.getPlayer().addSSkillExp(SSkillType.DROP_RATE, Randomizer.nextInt(5) + 1);
+                remove(c, slot);
+                return;
+            }
+            
             remove(c, slot);
             ii.getItemEffect(toUse.getItemId()).applyTo(c.getPlayer());
             c.getPlayer().checkBerserk();

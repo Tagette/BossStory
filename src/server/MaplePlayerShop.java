@@ -138,11 +138,11 @@ public class MaplePlayerShop extends AbstractMapleMapObject {
                                 owner.setPlayerShop(null);
                                 owner.getMap().broadcastMessage(MaplePacketCreator.removeCharBox(owner));
                                 this.removeVisitors();
-                                owner.dropMessage(1, "Your items are sold out, and therefore your shop is closed.");
+                                owner.message(1, "Your items are sold out, and therefore your shop is closed.");
                             }
                         }
                     } else {
-                        c.getPlayer().dropMessage(1, "Your inventory is full. Please clean a slot before buying this item.");
+                        c.getPlayer().message(1, "Your inventory is full. Please clean a slot before buying this item.");
                     }
                 }
             }

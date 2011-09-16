@@ -52,7 +52,7 @@ public final class MapleOxQuiz {
         double x = chr.getPosition().getX();
         double y = chr.getPosition().getY();
         if ((x > -234 && y > -26 && answer == 0) || (x < -234 && y > -26 && answer == 1)) {
-            chr.dropMessage("Correct!");
+            chr.message("Correct!");
             return true;
         }
         return false;

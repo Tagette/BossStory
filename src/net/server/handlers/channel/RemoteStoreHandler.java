@@ -50,7 +50,7 @@ public class RemoteStoreHandler extends AbstractMaplePacketHandler {
             }
             return;
         } else {
-           chr.dropMessage(1, "You don't have a Merchant open");
+           chr.message(1, "You don't have a Merchant open");
         }
         c.announce(MaplePacketCreator.enableActions());
     }

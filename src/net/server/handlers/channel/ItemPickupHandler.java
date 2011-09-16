@@ -25,7 +25,10 @@ import client.MapleCharacter;
 import net.server.MaplePartyCharacter;
 import client.MapleClient;
 import client.autoban.AutobanFactory;
+import client.sskills.SSkillType;
 import java.awt.Point;
+import java.util.Arrays;
+import java.util.List;
 import net.AbstractMaplePacketHandler;
 import scripting.item.ItemScriptManager;
 import server.MapleInventoryManipulator;
@@ -33,6 +36,7 @@ import server.MapleItemInformationProvider;
 import server.MapleItemInformationProvider.scriptedItem;
 import server.maps.MapleMapItem;
 import server.maps.MapleMapObject;
+import server.maps.MapleMapObjectType;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
@@ -48,6 +52,28 @@ public final class ItemPickupHandler extends AbstractMaplePacketHandler {
         int oid = slea.readInt();
         MapleCharacter chr = c.getPlayer();
         MapleMapObject ob = chr.getMap().getMapObject(oid);
+        
+        pickupItem(c, cpos, ob, false);
+        
+        // Item Vac
+        
+        if(chr.canItemVac(chr.getItemVacDelay())){
+            int vacAmount = chr.getItemVacAmount();
+            List<MapleMapObject> items = 
+                    chr.getMap().getClosestObjectsToPointInRange(
+                    chr.getPosition(), vacAmount, 
+                    chr.getItemVacRange(), Arrays.asList(MapleMapObjectType.ITEM));
+            for(MapleMapObject item : items){
+                pickupItem(c, cpos, item, true);
+            }
+            chr.addSSkillExp(SSkillType.MAGNETO, chr.getItemVacAmount() + 5);
+            chr.updateItemVac();
+        }
+        c.announce(MaplePacketCreator.enableActions());
+    }
+    
+    private static void pickupItem(MapleClient c, Point cpos, MapleMapObject ob, boolean skillVac){
+        MapleCharacter chr = c.getPlayer();
         if (chr.getInventory(MapleItemInformationProvider.getInstance().getInventoryType(ob.getObjectId())).getNextFreeSlot() > -1) {
             if (chr.getMapId() > 209000000 && chr.getMapId() < 209000016) {//happyville trees
                 MapleMapItem mapitem = (MapleMapItem) ob;
@@ -87,9 +113,9 @@ public final class ItemPickupHandler extends AbstractMaplePacketHandler {
                         return;
                     }
                     final double Distance = cpos.distanceSq(mapitem.getPosition());
-                    if (Distance > 2500) {
+                    if (Distance > 2500 && !skillVac) {
                         AutobanFactory.SHORT_ITEM_VAC.autoban(chr, cpos.toString() + Distance);
-                    } else if (chr.getPosition().distanceSq(mapitem.getPosition()) > 90000.0) {
+                    } else if (chr.getPosition().distanceSq(mapitem.getPosition()) > 90000.0 && !skillVac) {
                         AutobanFactory.ITEM_VAC.autoban(chr, cpos.toString() + Distance);
                     }
                     if (mapitem.getMeso() > 0) {
@@ -147,7 +173,6 @@ public final class ItemPickupHandler extends AbstractMaplePacketHandler {
                 }
             }            
         }
-        c.announce(MaplePacketCreator.enableActions());
     }
 
     static boolean useItem(final MapleClient c, final int id) {
