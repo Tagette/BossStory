@@ -23,6 +23,13 @@ package net;
 
 import client.MapleClient;
 import constants.ServerConstants;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import net.server.Server;
 import tools.MapleAESOFB;
 import tools.MaplePacketCreator;
@@ -68,7 +75,16 @@ public class MapleServerHandler extends IoHandlerAdapter {
             cause.getCause().printStackTrace();
             e.printStackTrace();
         }
-        //Write into a file pl0x
+        Writer output = null;
+        File file = new File("ErrorLog.txt");
+        if(!file.exists()) {
+            file.createNewFile();
+        }
+        output = new BufferedWriter(new FileWriter(file));
+        SimpleDateFormat date_format = new SimpleDateFormat("MM/dd,yyyy HH:mm");
+        output.write(date_format.format(new Date()) + " - " + cause.getMessage());
+        cause.printStackTrace((PrintWriter) output);
+        output.close();
     }
 
     @Override
@@ -79,6 +95,7 @@ public class MapleServerHandler extends IoHandlerAdapter {
         }        
         if (channel > -1 && world > -1) {
             if (Server.getInstance().getChannel(world, channel).isShutdown()) {
+                System.out.println("Session attempted to connect to a shutdown channel. (W: " + world + ", C: " + channel + ")");
                 session.close(true);
                 return;
             }

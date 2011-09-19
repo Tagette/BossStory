@@ -27,6 +27,9 @@ import constants.ServerConstants;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -56,7 +59,7 @@ import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import server.CashShop.CashItemFactory;
 import server.MapleItemInformationProvider;
 
-public class Server implements Runnable {
+public class Server {
     private IoAcceptor acceptor;
     private List<Map<Byte, String>> channels = new LinkedList<Map<Byte, String>>();
     private List<World> worlds = new ArrayList<World>();
@@ -108,20 +111,29 @@ public class Server implements Runnable {
     public String getIP(byte world, byte channel) {
         return channels.get(world).get(channel);
     }
-
-    @Override
-    public void run() {
+    
+    public void start() {
         Properties p = new Properties();
         try {
             p.load(new FileInputStream("moople.ini"));
         } catch (Exception e) {
-            System.out.println("Please start create_server.bat");
+            CreateINI.main(null);
             System.exit(0);
         }
         if(System.getProperty("wzpath") == null){
         	System.setProperty("wzpath", "wz");
         }
-        DatabaseConnection.getConnection();
+        try{
+            Connection c = DatabaseConnection.getConnection();
+            PreparedStatement ps = c.prepareStatement("UPDATE accounts SET loggedin = 0");
+            ps.executeUpdate();
+            ps.close();
+            ps = c.prepareStatement("UPDATE characters SET HasMerchant = 0");
+            ps.executeUpdate();
+            ps.close();
+        } catch(SQLException se){
+            
+        }
         IoBuffer.setUseDirectBuffer(false);
         IoBuffer.setAllocator(new SimpleBufferAllocator());
         acceptor = new NioSocketAcceptor();
@@ -178,18 +190,14 @@ public class Server implements Runnable {
         CashItemFactory.getSpecialCashItems();//just load who cares o.o
         MapleItemInformationProvider.getInstance().getAllItems();
         loldot.cancel(true);
-        System.out.println("\r\nServer is now online.");   
         online = true;
+        System.out.println("\r\nServer is now online.");
     }
 
     public void shutdown() {
         TimerManager.getInstance().stop();
         System.out.println("Server offline.");
         System.exit(0);
-    }
-
-    public static void main(String args[]) {
-        Server.getInstance().run();
     }
 
     public Properties getSubnetInfo() {

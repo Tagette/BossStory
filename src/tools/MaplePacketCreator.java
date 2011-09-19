@@ -602,7 +602,7 @@ public class MaplePacketCreator {
         mplew.writeShort(0);
         mplew.writeInt(c.getAccID()); //user id
         mplew.write(c.getGender());
-        mplew.write((c.getPlayer().gmLevel() > 0 ? 1 : 0)); //admin byte
+        mplew.write(0); //admin byte
         mplew.write(0);
         mplew.write(0);
         mplew.writeMapleAsciiString(account);

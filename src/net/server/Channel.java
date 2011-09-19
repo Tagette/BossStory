@@ -23,8 +23,6 @@ package net.server;
 
 import java.io.File;
 import java.net.InetSocketAddress;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +30,6 @@ import client.MapleCharacter;
 import constants.ServerConstants;
 import java.util.ArrayList;
 import java.util.Map.Entry;
-import tools.DatabaseConnection;
 import net.MaplePacket;
 import net.MapleServerHandler;
 import net.PacketProcessor;
@@ -92,13 +89,6 @@ public class Channel {
         });        
         try {
             eventSM = new EventScriptManager(this, ServerConstants.EVENTS.split(" "));
-            Connection c = DatabaseConnection.getConnection();
-            PreparedStatement ps = c.prepareStatement("UPDATE accounts SET loggedin = 0");
-            ps.executeUpdate();
-            ps.close();
-            ps = c.prepareStatement("UPDATE characters SET HasMerchant = 0");
-            ps.executeUpdate();
-            ps.close();
             port = 7575 + this.channel - 1;
             port += (world * 100);
             ip = ServerConstants.HOST + ":" + port;
@@ -197,7 +187,7 @@ public class Channel {
     }
 
     public void shutdown(int time) {
-        //TimerManager.getInstance().schedule(new ShutdownServer(getChannel()), time);
+        // TimerManager.getInstance().schedule(new ShutdownServer(getChannel()), time);
     }
 
     public MapleEvent getEvent() {

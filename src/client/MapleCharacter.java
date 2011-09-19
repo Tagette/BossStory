@@ -152,20 +152,15 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
     private int slots = 0;
     private int energybar;
     private int gmLevel;
-    
     // BossStory
-    
     private int rebirths;
-    private double donations;
+    private boolean vip;
     private int expRateMultiplier = 1, mesoRateMultiplier = 1, dropRateMultiplier = 1;
-    
     // Secondary Skills
     private long lastItemVac;
     private boolean lastAttackMelee;
     private List<SSkill> sSkills;
-    
     // End BossStory
-    
     private int ci = 0;
     private MapleFamily family;
     private int familyId;
@@ -2826,21 +2821,21 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
             }
             rs.close();
             ps.close();
-            
+
             ps = con.prepareStatement("SELECT type, exp, level FROM sskills WHERE characterid = ?");
             ps.setInt(1, charid);
             rs = ps.executeQuery();
-            
-            while(rs.next()){
+
+            while (rs.next()) {
                 SSkillType type = SSkillType.valueOf(rs.getString("type"));
                 int exp = rs.getInt("exp");
                 int level = rs.getInt("level");
                 ret.sSkills.add(new SSkill(type, exp, level));
             }
-            
+
             rs.close();
             ps.close();
-            
+
             ps = con.prepareStatement("SELECT mapid,vip FROM trocklocations WHERE characterid = ? LIMIT 15");
             ps.setInt(1, charid);
             rs = ps.executeQuery();
@@ -3608,7 +3603,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
             values.put("sp", remainingSp);
             values.put("ap", remainingAp);
             values.put("gm", gmLevel);
-            values.put("donations", donations);
             values.put("skincolor", skinColor.getId());
             values.put("gender", gender);
             values.put("job", job.getId());
@@ -3676,7 +3670,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
             if (update) {
                 monsterbook.saveCards(getId());
             }
-            
+
             values.put("monsterbookcover", bookCover);
             values.put("vanquisherStage", vanquisherStage);
             values.put("dojopoints", dojoPoints);
@@ -3696,29 +3690,32 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
                 values.put("name", name);
                 values.put("world", worldid);
             }
-            
+
             PreparedStatement ps;
             if (update) {
-            	StringBuilder sql = new StringBuilder();
-            	sql.append("UPDATE characters SET ");
-            	for(String key : values.keySet()){
-            		sql.append(key + " = ?, ");
-            	}
-            	sql = sql.delete(sql.length() - 2, sql.length() - 1); // Removes the ', ' at the end
-            	sql.append(" WHERE accountid = ?");
+                StringBuilder sql = new StringBuilder();
+                sql.append("UPDATE characters SET ");
+                for (String key : values.keySet()) {
+                    sql.append(key + " = ?, ");
+                }
+                sql = sql.delete(sql.length() - 2, sql.length() - 1); // Removes the ', ' at the end
+                sql.append(" WHERE accountid = ?");
+                //System.out.println(sql);
                 ps = con.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS);
             } else {
                 StringBuilder set = new StringBuilder();
                 StringBuilder vals = new StringBuilder();
-            	for(String key : values.keySet()){
-            		set.append(key + ", ");
-            		vals.append("?, ");
-            	}
-            	set = set.delete(set.length() - 2, set.length() - 1); // Removes the ', ' at the end
-            	vals = vals.delete(vals.length() - 2, vals.length() - 1); // Removes the ', ' at the end
-            	String sql =  "INSERT INTO characters (" + set + ") VALUES (" + vals + ")";
+                for (String key : values.keySet()) {
+                    set.append(key + ", ");
+                    vals.append("?, ");
+                }
+                set = set.delete(set.length() - 2, set.length() - 1); // Removes the ', ' at the end
+                vals = vals.delete(vals.length() - 2, vals.length() - 1); // Removes the ', ' at the end
+                String sql = "INSERT INTO characters (" + set + ") VALUES (" + vals + ")";
+                //System.out.println(sql);
                 ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             }
+
 
             int index = 1;
             for (Object val : values.values()) {
@@ -3730,24 +3727,31 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
                     ps.setLong(index, (Long) val);
                 } else if (val instanceof Double) {
                     ps.setDouble(index, (Double) val);
+                } else if (val instanceof Byte) {
+                    ps.setByte(index, (Byte) val);
                 }
                 index++;
             }
 
+            //System.out.println(ps.toString());
             values.clear();
             values = null;
 
-            int updateRows = ps.executeUpdate();
-            if (!update) {
-                ResultSet rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    this.id = rs.getInt(1);
-                } else {
-                    throw new RuntimeException("Inserting char failed.");
+            try {
+                int updateRows = ps.executeUpdate();
+                if (!update) {
+                    ResultSet rs = ps.getGeneratedKeys();
+                    if (rs.next()) {
+                        this.id = rs.getInt(1);
+                    } else {
+                        throw new RuntimeException("Inserting char failed.");
+                    }
+                } else if (updateRows < 1) {
+                    throw new RuntimeException("Character not in database (" + id
+                            + ")");
                 }
-            } else if (updateRows < 1) {
-                throw new RuntimeException("Character not in database (" + id
-                        + ")");
+            } catch (SQLException se) {
+                System.out.println(ps.toString());
             }
 
             // if (gmLevel < 1 && level > 199) {
@@ -3865,13 +3869,13 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
             // throw new RuntimeException("Character not in database (" + id +
             // ")");
             // }
-            
+
             ps = con.prepareStatement("DELETE FROM sskills WHERE characterid = ?");
             ps.setInt(1, id);
             ps.executeUpdate();
             ps.close();
-            
-            for(SSkill skill : sSkills){
+
+            for (SSkill skill : sSkills) {
                 ps = con.prepareStatement("INSERT INTO sskills (characterid, type, exp, level) VALUES (?, ?, ? ,?)");
                 ps.setInt(1, id);
                 ps.setString(2, skill.getType().name());
@@ -3879,7 +3883,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
                 ps.setInt(4, skill.getLevel());
                 ps.close();
             }
-            
+
             for (int i = 0; i < 3; i++) {
                 if (pets[i] != null) {
                     pets[i].saveToDb();
@@ -4204,11 +4208,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
 //                this.expRateMultiplier = worldz.getExpRate();
 //            }
 //        }
-        
-        if(haveItem(ServerConstants.EXP_CARD_ID)){
+
+        if (haveItem(ServerConstants.EXP_CARD_ID)) {
             this.expRateMultiplier = 2 * countItem(ServerConstants.EXP_CARD_ID) * this.getSSExpRate() * worldz.getExpRate();
         }
-        if(haveItem(ServerConstants.DROP_CARD_ID)){
+        if (haveItem(ServerConstants.DROP_CARD_ID)) {
             this.dropRateMultiplier = 2 * countItem(ServerConstants.DROP_CARD_ID) * this.getSSDropRate() * worldz.getDropRate();
             this.mesoRateMultiplier = 2 * countItem(ServerConstants.DROP_CARD_ID) * this.getSSMesoRate() * worldz.getMesoRate();
         }
@@ -5204,6 +5208,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
         area_data.clear();
     }
 
+    // BossStory
     public void rebirth() {
         setLevel(1);
         setExp(0);
@@ -5219,26 +5224,23 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
     public void setRebirths(int set) {
         rebirths = set;
     }
-    
-    public boolean isDonator(){
-    	return donations > 0;
+
+    public boolean isVip() {
+        return vip;
     }
-    
-    public double getDonations(){
-    	return donations;
+
+    public void setVip(boolean set) {
+        vip = set;
     }
-    
-    public void setDonations(double set){
-    	donations = set;
-    }
-    
-    public boolean inTown(){
+
+    public boolean inTown() {
         return map.isTown();
     }
-    
-    public boolean hasSSkill(SSkillType type){
-        for(SSkill skill : sSkills){
-            if(skill.getType().equals(type)){
+
+    // SSkills
+    public boolean hasSSkill(SSkillType type) {
+        for (SSkill skill : sSkills) {
+            if (skill.getType().equals(type)) {
                 return true;
             }
         }
@@ -5252,164 +5254,212 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
                 get = skill;
             }
         }
-        if(get == null){
+        if (get == null) {
             get = new SSkill(type, 0, 0);
-        	sSkills.add(get);
+            sSkills.add(get);
         }
         return get;
     }
 
     public boolean addSSkillExp(SSkillType type, int amount) {
-    	boolean canAdd = false;
-    	if(getSSkill(type).getLevel() < 30){
-    		canAdd = true;
-	        getSSkill(type).addExp(amount);
-	        message("You have recieved '" + amount + "' exp for the " + SSkill.getName(type) + " skill.");
-	        if (getSSkill(type).getExp() >= ExpTable.getSkillExpNeededForLevel(getSSkill(type).getLevel() + 1)) {
-	            sSkillLevelup(type);
-	        }
-    	}
-    	return canAdd;
+        boolean canAdd = false;
+        if (getSSkill(type).getLevel() < 30) {
+            canAdd = true;
+            getSSkill(type).addExp(amount);
+            message("You have recieved '" + amount + "' exp for the " + SSkill.getName(type) + " skill.");
+            if (getSSkill(type).getExp() >= ExpTable.getSkillExpNeededForLevel(getSSkill(type).getLevel() + 1)) {
+                sSkillLevelup(type);
+            }
+        }
+        return canAdd;
     }
-    
-    public void sSkillLevelup(SSkillType type){
+
+    public void sSkillLevelup(SSkillType type) {
         getSSkill(type).setLevel(getSSkill(type).getLevel() + 1);
-        
+
         message(1, "Congratulations! Your skill in " + SSkill.getName(type) + " has increased to level " + (getSSkill(type).getLevel() + 1) + "!");
         message("Congratulations! Your skill in " + SSkill.getName(type) + " has increased to level " + (getSSkill(type).getLevel() + 1) + "!");
         message("For help with secondary skills type '@help sskill'. To view your secondary skills type '@charinfo'.");
         map.broadcastMessage(this, MaplePacketCreator.showForeginCardEffect(id), false);
         client.getSession().write(MaplePacketCreator.showGainCard());
     }
-    
+
     // SS Magneto
-    
-    public int getItemVacDelay(){
+    public int getItemVacDelay() {
         return 30100 - (getSSkill(SSkillType.MAGNETO).getLevel() * 1000);
     }
-    
-    public int getItemVacAmount(){
+
+    public int getItemVacAmount() {
         return getSSkill(SSkillType.MAGNETO).getLevel() * 2;
     }
-    
-    public double getItemVacRange(){
+
+    public double getItemVacRange() {
         return getSSkill(SSkillType.MAGNETO).getLevel() * 10000;
     }
-    
-    public boolean canItemVac(int delay){
+
+    public boolean canItemVac(int delay) {
         return ServerConstants.ALLOW_MAGNETO && ServerConstants.ALLOW_SSKILLS
-                && hasSSkill(SSkillType.MAGNETO) && System.currentTimeMillis() - lastItemVac >= delay 
+                && hasSSkill(SSkillType.MAGNETO) && System.currentTimeMillis() - lastItemVac >= delay
                 && !inTown();
     }
-    
-    public void updateItemVac(){
+
+    public void updateItemVac() {
         lastItemVac = System.currentTimeMillis();
     }
-    
+
     // SS Rates
-    
-    public int getSSExpRate(){
-    	return getSSkill(SSkillType.EXP_RATE).getLevel() * ServerConstants.EXP_INCREMENT;
+    public int getSSExpRate() {
+        return getSSkill(SSkillType.EXP_RATE).getLevel() * ServerConstants.EXP_INCREMENT;
     }
-    
-    public int getSSMesoRate(){
-    	return getSSkill(SSkillType.MESO_RATE).getLevel() * ServerConstants.MESO_INCREMENT;
+
+    public int getSSMesoRate() {
+        return getSSkill(SSkillType.MESO_RATE).getLevel() * ServerConstants.MESO_INCREMENT;
     }
-    
-    public int getSSDropRate(){
-    	return getSSkill(SSkillType.DROP_RATE).getLevel() * ServerConstants.DROP_INCREMENT;
+
+    public int getSSDropRate() {
+        return getSSkill(SSkillType.DROP_RATE).getLevel() * ServerConstants.DROP_INCREMENT;
     }
-    
-    public boolean canUseExpRate(){
-    	return ServerConstants.ALLOW_SSKILLS && ServerConstants.ALLOW_EXP_RATE;
+
+    public boolean canUseExpRate() {
+        return ServerConstants.ALLOW_SSKILLS && ServerConstants.ALLOW_EXP_RATE;
     }
-    
-    public boolean canUseMesoRate(){
-    	return ServerConstants.ALLOW_SSKILLS && ServerConstants.ALLOW_MESO_RATE;
+
+    public boolean canUseMesoRate() {
+        return ServerConstants.ALLOW_SSKILLS && ServerConstants.ALLOW_MESO_RATE;
     }
-    
-    public boolean canUseDropRate(){
-    	return ServerConstants.ALLOW_SSKILLS && ServerConstants.ALLOW_DROP_RATE;
+
+    public boolean canUseDropRate() {
+        return ServerConstants.ALLOW_SSKILLS && ServerConstants.ALLOW_DROP_RATE;
     }
-    
-    // Enchantment
-    
-    public boolean getScrollSlotRemove(){
-    	int sLevel = hasSSkill(SSkillType.ENCHANTMENT) ? getSSkill(SSkillType.ENCHANTMENT).getLevel() : 0;
-    	return sLevel == 0 || Randomizer.nextInt(30 - sLevel) != Randomizer.nextInt(30 - sLevel);
+
+    // SS Enchantment
+    public boolean getScrollSlotRemove() {
+        int sLevel = hasSSkill(SSkillType.ENCHANTMENT) ? getSSkill(SSkillType.ENCHANTMENT).getLevel() : 0;
+        return sLevel == 0 || Randomizer.nextInt(30 - sLevel) != Randomizer.nextInt(30 - sLevel);
     }
-    
-    public int getScrollMulti(){
-    	int amount = 1;
-    	int sLevel = hasSSkill(SSkillType.ENCHANTMENT) ? getSSkill(SSkillType.ENCHANTMENT).getLevel() : 0;
-    	if(sLevel >= 10){
+
+    public int getScrollMulti() {
+        int amount = 1;
+        int sLevel = hasSSkill(SSkillType.ENCHANTMENT) ? getSSkill(SSkillType.ENCHANTMENT).getLevel() : 0;
+        if (sLevel >= 10) {
             amount = 5 * (sLevel - 10);
             amount = Randomizer.nextInt(amount / 2) + (amount / 2);
-    	}
-    	return amount <= 0 ? 1 : amount;
+        }
+        return amount <= 0 ? 1 : amount;
     }
-    
-    public int getScrollRerolls(){
-    	int amount = 0;
-    	int sLevel = hasSSkill(SSkillType.ENCHANTMENT) ? getSSkill(SSkillType.ENCHANTMENT).getLevel() : 0;
-    	if(sLevel >= 15){
+
+    public int getScrollRerolls() {
+        int amount = 0;
+        int sLevel = hasSSkill(SSkillType.ENCHANTMENT) ? getSSkill(SSkillType.ENCHANTMENT).getLevel() : 0;
+        if (sLevel >= 15) {
             amount = sLevel - 15;
-    	}
-    	return amount > 10 ? 10 : amount;
+        }
+        return amount > 10 ? 10 : amount;
     }
-    
-    public int getScrollStatMultiplier(){
-    	int amount = 1;
-    	int sLevel = hasSSkill(SSkillType.ENCHANTMENT) ? getSSkill(SSkillType.ENCHANTMENT).getLevel() : 0;
-    	if(sLevel >= 5){
+
+    public int getScrollStatMultiplier() {
+        int amount = 1;
+        int sLevel = hasSSkill(SSkillType.ENCHANTMENT) ? getSSkill(SSkillType.ENCHANTMENT).getLevel() : 0;
+        if (sLevel >= 5) {
             int temp = (sLevel - 5) / 5;
             amount = Randomizer.rand(1, 1 + (temp <= 4 ? temp : 4));
-    	}
-    	return amount <= 0 ? 1 : amount;
+        }
+        return amount <= 0 ? 1 : amount;
     }
-    
-    //Skinning
-    
-    public boolean AttackWasMelee(){
-    	return lastAttackMelee;
+
+    // SS Skinning
+    public boolean AttackWasMelee() {
+        return lastAttackMelee;
     }
-    
-    public void AttackWasMelee(boolean set){
-    	lastAttackMelee = set;
+
+    public void AttackWasMelee(boolean set) {
+        lastAttackMelee = set;
     }
-    
-    public boolean canSkin(){
-    	return ServerConstants.ALLOW_SKINNING && ServerConstants.ALLOW_SSKILLS 
+
+    public boolean canSkin() {
+        return ServerConstants.ALLOW_SKINNING && ServerConstants.ALLOW_SSKILLS
                 && hasSSkill(SSkillType.SKINNING) && AttackWasMelee()
                 && !inTown();
     }
-    
-    public int getSkinAmount(){
-    	int amount = ((getSSkill(SSkillType.SKINNING).getLevel()) / 2) 
+
+    public int getSkinAmount() {
+        int amount = ((getSSkill(SSkillType.SKINNING).getLevel()) / 2)
                 + (Randomizer.nextInt(getSSkill(SSkillType.SKINNING).getLevel() / 2) + 1);
-    	return hasSSkill(SSkillType.SKINNING) ? amount : 0;
+        return hasSSkill(SSkillType.SKINNING) ? amount : 0;
     }
-    
-    // Politics
-    
-    public boolean canPolitics(){
-        return ServerConstants.ALLOW_SSKILLS && ServerConstants.ALLOW_SKINNING 
+
+    // SS Politics
+    /*
+     * 
+    - @kill → Kills a specified player.
+    - @rape → Makes a specified player lay down and unable to move for a short time.
+    - @heal → Heals a specified player.
+    - @curse → Puts a lot of curses on a player.
+    - @kick → Kicks a specified player out of the town.
+    - @bomb → Creates a bomb on the floor that will explode.
+    - @mimic → Changes your clothes and body to mimic what a player looks like.
+     * 
+     */
+    public boolean canPolitics() {
+        return ServerConstants.ALLOW_SSKILLS && ServerConstants.ALLOW_SKINNING
                 && hasSSkill(SSkillType.POLITICS);
     }
-    
-    // Monster Charmer
-    
-    public boolean canCharmMonsters(){
-        return ServerConstants.ALLOW_SSKILLS && ServerConstants.ALLOW_MONSTER_CHARMER 
+
+    public boolean canPolCurse() {
+        return canPolitics() && inTown()
+                && getSSkill(SSkillType.POLITICS).getLevel() >= 1;
+    }
+
+    public boolean canPolBomb() {
+        return canPolitics() && inTown()
+                && getSSkill(SSkillType.POLITICS).getLevel() >= 5;
+    }
+
+    public boolean canPolHeal() {
+        return canPolitics() && inTown()
+                && getSSkill(SSkillType.POLITICS).getLevel() >= 10;
+    }
+
+    public boolean canPolKick() {
+        return canPolitics() && inTown()
+                && getSSkill(SSkillType.POLITICS).getLevel() >= 15;
+    }
+
+    public boolean canPolRape() {
+        return canPolitics() && inTown()
+                && getSSkill(SSkillType.POLITICS).getLevel() >= 20;
+    }
+
+    public boolean canPolMimic() {
+        return canPolitics() && inTown()
+                && getSSkill(SSkillType.POLITICS).getLevel() >= 25;
+    }
+
+    public boolean canPolKill() {
+        return canPolitics() && inTown()
+                && getSSkill(SSkillType.POLITICS).getLevel() == 30;
+    }
+
+    public void rape() {
+        List<Pair<MapleBuffStat, Integer>> list = new ArrayList<Pair<MapleBuffStat, Integer>>();
+        list.add(new Pair<MapleBuffStat, Integer>(MapleBuffStat.MORPH, 8));
+        list.add(new Pair<MapleBuffStat, Integer>(MapleBuffStat.CONFUSE, 1));
+        announce(MaplePacketCreator.giveBuff(0, 0, list));
+        map.broadcastMessage(this, MaplePacketCreator.giveForeignBuff(id, list));
+    }
+
+    // SS Monster Charmer
+    public boolean canCharmMonsters() {
+        return ServerConstants.ALLOW_SSKILLS && ServerConstants.ALLOW_MONSTER_CHARMER
                 && !inTown() && hasSSkill(SSkillType.MONSTER_CHARMER);
     }
-    
-    public int getCharmCount(){
-        return hasSSkill(SSkillType.MONSTER_CHARMER) 
+
+    public int getCharmCount() {
+        return hasSSkill(SSkillType.MONSTER_CHARMER)
                 ? Randomizer.nextInt(getSSkill(SSkillType.MONSTER_CHARMER).getLevel()) : 0;
     }
-    
-    public double getCharmRange(){
+
+    public double getCharmRange() {
         return hasSSkill(SSkillType.MONSTER_CHARMER)
                 ? (double) Randomizer.nextInt(10000 * getSSkill(SSkillType.MONSTER_CHARMER).getLevel()) : 0;
     }

@@ -5,12 +5,10 @@ import client.MapleCharacter;
 
 public enum MapleGroups {
     PLAYER(0), // Ordinary Player
-    DONATOR(1),
-    VIP(2),
-    INTERN(10), // 10+ are reserved for GM's
-    GM(11),
-    SUPER(12),
-    ADMIN(13);
+    INTERN(1), 
+    GM(2),
+    SUPER(3),
+    ADMIN(4);
     
     private int code = 0;
     

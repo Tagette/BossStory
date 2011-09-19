@@ -52,6 +52,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
         return !c.isLoggedIn();
     }
     public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {
+        System.out.println("PlayerLoggedInHandler");
         final int cid = slea.readInt();
         final Server server = Server.getInstance();
         MapleCharacter player = server.getPlayerStorage().removePlayer(cid);
@@ -59,7 +60,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
             try {
                 player = MapleCharacter.loadCharFromDB(cid, c, true);
             } catch (SQLException e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
         } else {
             player.newClient(c);
@@ -81,6 +82,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                 }
 
             if (state != MapleClient.LOGIN_SERVER_TRANSITION || !allowLogin) {
+                System.out.println("Not allowed log in.");
                 c.setPlayer(null);
                 c.getSession().close(true);
                 return;
@@ -111,7 +113,7 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
                 c.announce(MaplePacketCreator.sendDueyMSG((byte) 0x1B));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         } finally {
             try {
                 if (rs != null) rs.close();
@@ -201,5 +203,6 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
         player.checkBerserk();
         player.expirationTask();
         player.setRates();
+        System.out.println("PlayerLoggedInHandler Complete");
     }
 }

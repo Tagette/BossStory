@@ -33,16 +33,10 @@ public final class GeneralchatHandler extends net.AbstractMaplePacketHandler {
         String msg = slea.readMapleAsciiString();
         MapleCharacter chr = c.getPlayer();
         char heading = msg.charAt(0);
-        if (heading == '/' || heading == '!' || heading == '@') {
+        if (heading == '/' || heading == '!') {
             String[] sp = msg.split(" ");
             sp[0] = sp[0].toLowerCase().substring(1);
-            if (!CommandProcessor.executePlayerCommand(c, sp, heading)) {
-                if (chr.isGM()) {
-                    if (!CommandProcessor.executeGMCommand(c, sp, heading)) {
-                        CommandProcessor.executeAdminCommand(c, sp, heading);
-                    }
-                }
-            }
+            CommandProcessor.processCommand(c, sp, heading);
         } else {
             if (!chr.isHidden())
                 chr.getMap().broadcastMessage(MaplePacketCreator.getChatText(chr.getId(), msg, chr.isGM(), slea.readByte()));

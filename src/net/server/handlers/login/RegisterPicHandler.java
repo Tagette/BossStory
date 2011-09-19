@@ -44,6 +44,7 @@ public final class RegisterPicHandler extends AbstractMaplePacketHandler {
 		log.error("Host not found", e);
             }
        } else {
+            System.out.println("RegisterPicHandler: Client closed due to not null pic. (" + c.getAccID() + ")");
             c.getSession().close(true);
        }
     }
