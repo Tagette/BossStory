@@ -1,0 +1,20 @@
+[required](optional)
+
+!buffme
+!spawn [id]
+!cleardrops
+!gmshop
+!heal
+!id [search]
+!item [id]
+!kill [name]
+!killall
+!level [number]
+!maxstat
+!maxskills
+!mesos
+!notice [message]
+!online
+!pap
+!pianus
+!vac

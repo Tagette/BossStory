@@ -1,0 +1,69 @@
+4000223 - Cucumber
+4000325 - Carrot
+4031123 - Pineapple
+4031124 - Strawberry
+4031032 - Red Ginger Root
+4031400 - Papaya
+4031401 - Rose Apple
+4031419 - Pumpkin
+4031701 - Watermelon
+4031794 - Tae Soo's Peach
+
+4000356 - Flask
+4000354 - Beaker
+4001095 - Green Seed
+4001096 - Purple Seed
+4001097 - Pink Seed
+4001098 - Brown Seed
+4001099 - Yellow Seed
+4001100 - Blue Seed
+
+4000168 - Sunflower Seed
+4000282 - Peach Seed
+4001053 - Strange Seed
+4001054 - Even Stranger Seed
+
+4003002 - Peice of Ice
+
+4004000 - Power Ore
+4004001 - Wisdom Ore
+4004002 - DEX Ore
+4004003 - LUK Ore
+4004004 - Dark Ore
+
+4005000 - Power Crystal
+4005001 - Wisdom Crystal
+4005002 - DEX Crystal
+4005003 - LUK Ore
+4005004 - Dark Crystal
+
+4006000 - Magic Crystal
+4006001 - Magic Rock
+
+4031817 - Red Slime Candy
+4031818 - Green Slime Candy
+4031819 - Purple Slime Candy
+4031820 - Orange Slime Candy
+
+4000038 - Trophy
+4031865 - NX 100
+4031866 - NX 250
+
+4170000 - Orange Pet Egg
+
+4030002 - Tetris Blue Square
+4030003 - Tetris Red Rectangle
+4030004 - Tetris Blue Z
+4030005 - Tetris Yellow L
+4030006 - Tetris Pink L
+4030007 - Tetris Green 3-Prong
+4030008 - Tetris Orange Z
+
+2000000 - Red Potion
+2000001 - Orange Potion
+2000002 - White Potion
+2000003 - Blue Potion
+2000004 - Elixir
+2000005 - Power Elixer
+2000006 - Mana Elixer
+
