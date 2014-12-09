@@ -1,0 +1,12 @@
+[Bb]uilds?/
+[Dd]ist/
+build.xml
+[Mm]edia/
+nbproject/
+nblibraries.properties
+manifest.mf
+*.sln
+*.iml
+bin/
+obj/
+*.cspro
