@@ -160,7 +160,7 @@ public class CashShop {
             PreparedStatement ps = null;
             ResultSet rs = null;
             try {
-                ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM specialcashitems");
+                ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM specialCashItems");
                 rs = ps.executeQuery();
                 while (rs.next()) {
                     specialcashitems.add(new SpecialCashItem(rs.getInt("sn"), rs.getInt("modifier"), rs.getByte("info")));
@@ -203,7 +203,7 @@ public class CashShop {
             PreparedStatement ps = null;
             ResultSet rs = null;
             try {
-                ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM specialcashitems");
+                ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM specialCashItems");
                 rs = ps.executeQuery();
                 while (rs.next()) {
                     specialcashitems.add(new SpecialCashItem(rs.getInt("sn"), rs.getInt("modifier"), rs.getByte("info")));
@@ -259,7 +259,7 @@ public class CashShop {
                 inventory.add(item.getLeft());
             }
 
-            ps = con.prepareStatement("SELECT `sn` FROM `wishlists` WHERE `charid` = ?");
+            ps = con.prepareStatement("SELECT `sn` FROM `wishLists` WHERE `charId` = ?");
             ps.setInt(1, characterId);
             rs = ps.executeQuery();
 
@@ -392,7 +392,7 @@ public class CashShop {
                 item.setGiftFrom(rs.getString("from"));
                 if (item.getType() == MapleInventoryType.EQUIP.getType()) {
                     equip = (IEquip) item;
-                    equip.setRingId(rs.getInt("ringid"));
+                    equip.setRingId(rs.getInt("ringId"));
                     gifts.add(new Pair<IItem, String>(equip, rs.getString("message")));
                 } else
                     gifts.add(new Pair<IItem, String>(item, rs.getString("message")));
@@ -444,7 +444,7 @@ public class CashShop {
         }
 
         factory.saveItems(itemsWithType, accountId);
-        ps = con.prepareStatement("DELETE FROM `wishlists` WHERE `charid` = ?");
+        ps = con.prepareStatement("DELETE FROM `wishlists` WHERE `charId` = ?");
         ps.setInt(1, characterId);
         ps.executeUpdate();
         ps = con.prepareStatement("INSERT INTO `wishlists` VALUES (DEFAULT, ?, ?)");

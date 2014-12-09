@@ -149,7 +149,7 @@ public class MonsterCarnival {
         public void saveResults() {
             Connection con = DatabaseConnection.getConnection();
                 try {
-                    PreparedStatement ps = con.prepareStatement("INSERT INTO carnivalresults VALUES (?,?,?,?)");
+                    PreparedStatement ps = con.prepareStatement("INSERT INTO carnivalResults VALUES (?,?,?,?)");
                     for (MapleCharacter chr : red.getMembers()) {
                         ps.setInt(1, chr.getId());
                         ps.setInt(2, chr.getCP());

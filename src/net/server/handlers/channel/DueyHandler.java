@@ -161,15 +161,15 @@ public final class DueyHandler extends AbstractMaplePacketHandler {
             DueyPackages dp = null;
             Connection con = DatabaseConnection.getConnection();
             try {
-                PreparedStatement ps = con.prepareStatement("SELECT * FROM dueypackages LEFT JOIN dueyitems USING (PackageId) WHERE PackageId = ?"); // PLEASE WORK D:
+                PreparedStatement ps = con.prepareStatement("SELECT * FROM dueyPackages LEFT JOIN dueyItems USING (packageId) WHERE packageId = ?"); // PLEASE WORK D:
                 ps.setInt(1, packageid);
                 ResultSet rs = ps.executeQuery();
                 DueyPackages dueypack = null;
                 if (rs.next()) {
                     dueypack = getItemByPID(rs);
-                    dueypack.setSender(rs.getString("SenderName"));
-                    dueypack.setMesos(rs.getInt("Mesos"));
-                    dueypack.setSentTime(rs.getString("TimeStamp"));
+                    dueypack.setSender(rs.getString("senderName"));
+                    dueypack.setMesos(rs.getInt("mesos"));
+                    dueypack.setSentTime(rs.getString("timeStamp"));
                     packages.add(dueypack);
                 }
                 rs.close();
@@ -207,7 +207,7 @@ public final class DueyHandler extends AbstractMaplePacketHandler {
     private void addItemToDB(IItem item, int quantity, int mesos, String sName, int recipientID) {
         Connection con = DatabaseConnection.getConnection();
         try {
-            PreparedStatement ps = con.prepareStatement("INSERT INTO dueypackages (RecieverId, SenderName, Mesos, TimeStamp, Checked, Type) VALUES (?, ?, ?, ?, ?, ?)");
+            PreparedStatement ps = con.prepareStatement("INSERT INTO dueyPackages (recieverId, senderName, mesos, timeStamp, checked, type) VALUES (?, ?, ?, ?, ?, ?)");
             ps.setInt(1, recipientID);
             ps.setString(2, sName);
             ps.setInt(3, mesos);
@@ -223,7 +223,7 @@ public final class DueyHandler extends AbstractMaplePacketHandler {
                 rs.next();
                 PreparedStatement ps2;
                 if (item.getType() == 1) { // equips
-                    ps2 = con.prepareStatement("INSERT INTO dueyitems (PackageId, itemid, quantity, upgradeslots, level, str, dex, `int`, luk, hp, mp, watk, matk, wdef, mdef, acc, avoid, hands, speed, jump, owner) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    ps2 = con.prepareStatement("INSERT INTO dueyitems (packageId, itemId, quantity, upgradeSlots, level, str, dex, `int`, luk, hp, mp, watk, matk, wdef, mdef, acc, avoid, hands, speed, jump, owner) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                     Equip eq = (Equip) item;
                     ps2.setInt(2, eq.getItemId());
                     ps2.setInt(3, 1);
@@ -246,7 +246,7 @@ public final class DueyHandler extends AbstractMaplePacketHandler {
                     ps2.setInt(20, eq.getJump());
                     ps2.setString(21, eq.getOwner());
                 } else {
-                    ps2 = con.prepareStatement("INSERT INTO dueyitems (PackageId, itemid, quantity, owner) VALUES (?, ?, ?, ?)");
+                    ps2 = con.prepareStatement("INSERT INTO dueyItems (packageId, itemId, quantity, owner) VALUES (?, ?, ?, ?)");
                     ps2.setInt(2, item.getItemId());
                     ps2.setInt(3, quantity);
                     ps2.setString(4, item.getOwner());
@@ -265,14 +265,14 @@ public final class DueyHandler extends AbstractMaplePacketHandler {
         List<DueyPackages> packages = new LinkedList<DueyPackages>();
         Connection con = DatabaseConnection.getConnection();
         try {
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM dueypackages LEFT JOIN dueyitems USING (PackageId) WHERE RecieverId = ?"); // PLEASE WORK D:
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM dueyPackages LEFT JOIN dueyItems USING (packageId) WHERE recieverId = ?"); // PLEASE WORK D:
             ps.setInt(1, chr.getId());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 DueyPackages dueypack = getItemByPID(rs);
-                dueypack.setSender(rs.getString("SenderName"));
-                dueypack.setMesos(rs.getInt("Mesos"));
-                dueypack.setSentTime(rs.getString("TimeStamp"));
+                dueypack.setSender(rs.getString("senderName"));
+                dueypack.setMesos(rs.getInt("mesos"));
+                dueypack.setSentTime(rs.getString("timeStamp"));
                 packages.add(dueypack);
             }
             rs.close();
@@ -314,11 +314,11 @@ public final class DueyHandler extends AbstractMaplePacketHandler {
     private void removeItemFromDB(int packageid) {
         Connection con = DatabaseConnection.getConnection();
         try {
-            PreparedStatement ps = con.prepareStatement("DELETE FROM dueypackages WHERE PackageId = ?");
+            PreparedStatement ps = con.prepareStatement("DELETE FROM dueyPackages WHERE packageId = ?");
             ps.setInt(1, packageid);
             ps.executeUpdate();
             ps.close();
-            ps = con.prepareStatement("DELETE FROM dueyitems WHERE PackageId = ?");
+            ps = con.prepareStatement("DELETE FROM dueyItems WHERE packageId = ?");
             ps.setInt(1, packageid);
             ps.executeUpdate();
             ps.close();
@@ -331,7 +331,7 @@ public final class DueyHandler extends AbstractMaplePacketHandler {
             DueyPackages dueypack;
             if (rs.getInt("type") == 1) {
                 Equip eq = new Equip(rs.getInt("itemid"), (byte) 0, -1);
-                eq.setUpgradeSlots((byte) rs.getInt("upgradeslots"));
+                eq.setUpgradeSlots((byte) rs.getInt("upgradeSlots"));
                 eq.setLevel((byte) rs.getInt("level"));
                 eq.setStr((short) rs.getInt("str"));
                 eq.setDex((short) rs.getInt("dex"));
@@ -349,13 +349,13 @@ public final class DueyHandler extends AbstractMaplePacketHandler {
                 eq.setSpeed((short) rs.getInt("speed"));
                 eq.setJump((short) rs.getInt("jump"));
                 eq.setOwner(rs.getString("owner"));
-                dueypack = new DueyPackages(rs.getInt("PackageId"), eq);
+                dueypack = new DueyPackages(rs.getInt("packageId"), eq);
             } else if (rs.getInt("type") == 2) {
-                Item newItem = new Item(rs.getInt("itemid"), (byte) 0, (short) rs.getInt("quantity"));
+                Item newItem = new Item(rs.getInt("itemId"), (byte) 0, (short) rs.getInt("quantity"));
                 newItem.setOwner(rs.getString("owner"));
-                dueypack = new DueyPackages(rs.getInt("PackageId"), newItem);
+                dueypack = new DueyPackages(rs.getInt("packageId"), newItem);
             } else {
-                dueypack = new DueyPackages(rs.getInt("PackageId"));
+                dueypack = new DueyPackages(rs.getInt("packageId"));
             }
             return dueypack;
         } catch (SQLException se) {

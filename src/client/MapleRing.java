@@ -56,7 +56,7 @@ public class MapleRing implements Comparable<MapleRing> {
             ps.setInt(1, ringId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                ret = new MapleRing(ringId, rs.getInt("partnerRingId"), rs.getInt("partnerChrId"), rs.getInt("itemid"), rs.getString("partnerName"));
+                ret = new MapleRing(ringId, rs.getInt("partnerRingId"), rs.getInt("partnerChrId"), rs.getInt("itemId"), rs.getString("partnerName"));
             }
             rs.close();
             ps.close();
@@ -76,7 +76,7 @@ public class MapleRing implements Comparable<MapleRing> {
             }
             int[] ringID = new int[2];
             Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("INSERT INTO rings (itemid, partnerChrId, partnername) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = con.prepareStatement("INSERT INTO rings (itemId, partnerChrId, partnerName) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, itemid);
             ps.setInt(2, partner2.getId());
             ps.setString(3, partner2.getName());
@@ -86,7 +86,7 @@ public class MapleRing implements Comparable<MapleRing> {
             ringID[0] = rs.getInt(1); // ID.
             rs.close();
             ps.close();
-            ps = con.prepareStatement("INSERT INTO rings (itemid, partnerRingId, partnerChrId, partnername) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            ps = con.prepareStatement("INSERT INTO rings (itemId, partnerRingId, partnerChrId, partnerName) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, itemid);
             ps.setInt(2, ringID[0]);
             ps.setInt(3, partner1.getId());

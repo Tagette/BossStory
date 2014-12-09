@@ -1031,7 +1031,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public String getTop5Stats() {
         String out = "#bTop 5 Players:#k\r\n  Name | Level | Rebirths | Wealth\r\n";
         try {
-            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM characters WHERE gm < 10 ORDER BY totallevel DESC, level DESC, exp DESC, name ASC LIMIT 5");
+            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM characters WHERE gm < 10 ORDER BY totalLevel DESC, level DESC, exp DESC, name ASC LIMIT 5");
             ResultSet rs = ps.executeQuery();
             int a = 1;
             while (rs.next()) {

@@ -59,11 +59,11 @@ public class RankingWorker implements Runnable {
     }
 
     private void updateRanking(MapleJob job) throws SQLException {
-        String sqlCharSelect = "SELECT c.id, " + (job != null ? "c.jobRank, c.jobRankMove" : "c.rank, c.rankMove") + ", a.lastlogin AS lastlogin, a.loggedin FROM characters AS c LEFT JOIN accounts AS a ON c.accountid = a.id WHERE c.gm = 0 ";
+        String sqlCharSelect = "SELECT c.id, " + (job != null ? "c.jobRank, c.jobRankMove" : "c.rank, c.rankMove") + ", a.lastLogin AS lastLogin, a.loggedIn FROM characters AS c LEFT JOIN accounts AS a ON c.accountId = a.id WHERE c.gm = 0 ";
         if (job != null) {
             sqlCharSelect += "AND c.job DIV 100 = ? ";
         }
-        sqlCharSelect += "ORDER BY c.totallevel DESC, c.rebirths DESC, c.level DESC , c.exp DESC , c.wealth DESC";
+        sqlCharSelect += "ORDER BY c.totalLevel DESC, c.rebirths DESC, c.level DESC , c.exp DESC , c.wealth DESC";
         //sqlCharSelect += "ORDER BY c.level DESC , c.exp DESC , c.fame DESC , c.meso DESC";
         PreparedStatement charSelect = con.prepareStatement(sqlCharSelect);
         if (job != null) {
@@ -75,7 +75,7 @@ public class RankingWorker implements Runnable {
         while (rs.next()) {
             int rankMove = 0;
             rank++;
-            if (rs.getLong("lastlogin") < lastUpdate || rs.getInt("loggedin") > 0) {
+            if (rs.getLong("lastLogin") < lastUpdate || rs.getInt("loggedIn") > 0) {
                 rankMove = rs.getInt((job != null ? "jobRankMove" : "rankMove"));
             }
             rankMove += rs.getInt((job != null ? "jobRank" : "rank")) - rank;

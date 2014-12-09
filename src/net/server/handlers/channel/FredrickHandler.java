@@ -97,7 +97,7 @@ public class FredrickHandler extends AbstractMaplePacketHandler {
     private static boolean deleteItems(MapleCharacter chr) {
 	try {
             Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("DELETE FROM `inventoryitems` WHERE `type` = ? AND `characterid` = ?");
+            PreparedStatement ps = con.prepareStatement("DELETE FROM `inventoryItems` WHERE `type` = ? AND `characterId` = ?");
 
             ps.setInt(1, ItemFactory.MERCHANT.getValue());
             ps.setInt(2, chr.getId());

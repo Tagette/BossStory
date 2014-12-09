@@ -124,8 +124,8 @@ public class SuperCmd extends CommandHandler {
                         }
                         if (newLevel > MapleGroup.ADMIN.getId()) {
                             chr.message("That user is already an Admin.");
-                        } else if (newLevel < 0) {
-                            chr.message("That user is already a Non-GM.");
+                        } else if (newLevel < 0 && chr.gmLevel() < MapleGroup.SUPER.getId()) {
+                            chr.message("That user is not a GM. Only Super GM's can recruit new GM's.");
                         } else {
                             ps.close();
                             ps = con.prepareStatement("UPDATE characters SET gm = ?, lastGm = ? WHERE name = ?");
@@ -292,7 +292,7 @@ public class SuperCmd extends CommandHandler {
                         int cVp = rs.getInt("votepoints");
                         rs.close();
                         ps.close();
-                        ps = con.prepareStatement("UPDATE accounts SET votepoints = ? WHERE id = ?");
+                        ps = con.prepareStatement("UPDATE accounts SET votePoints = ? WHERE id = ?");
                         ps.setInt(1, cVp + amount);
                         ps.setInt(2, accountId);
                         ps.executeUpdate();
@@ -330,7 +330,6 @@ public class SuperCmd extends CommandHandler {
     @Command
     @Syntax("!takecharacter [name]")
     @Description("Takes a character from [name]'s account to yours.")
-    @SuppressWarnings("CallToThreadDumpStack")
     public void takecharacter() {
         String name = args[1];
         try {
@@ -350,10 +349,10 @@ public class SuperCmd extends CommandHandler {
             ps.setString(1, name);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                victimAId = rs.getInt("origaccid");
-                victimCID = rs.getInt("accountid");
+                victimAId = rs.getInt("origaccId");
+                victimCID = rs.getInt("accountId");
                 if (victimAId == victimCID) {
-                    ps = con.prepareStatement("UPDATE characters SET accountid = ? WHERE name = ?");
+                    ps = con.prepareStatement("UPDATE characters SET accountId = ? WHERE name = ?");
                     ps.setInt(1, client.getAccID());
                     ps.setString(2, name);
                     ps.executeUpdate();
@@ -396,9 +395,9 @@ public class SuperCmd extends CommandHandler {
             ps.setString(1, name);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                if (rs.getInt("accountid") != rs.getInt("origaccid")) {
-                    int victimAId = rs.getInt("origaccid");
-                    ps = con.prepareStatement("UPDATE characters SET accountid = ? WHERE name = ?");
+                if (rs.getInt("accountId") != rs.getInt("origaccId")) {
+                    int victimAId = rs.getInt("origaccId");
+                    ps = con.prepareStatement("UPDATE characters SET accountId = ? WHERE name = ?");
                     ps.setInt(1, victimAId);
                     ps.setString(2, name);
                     ps.executeUpdate();

@@ -109,7 +109,7 @@ public class BuddylistModifyHandler extends AbstractMaplePacketHandler {
                            buddyAddResult = world.requestBuddyAdd(addName, c.getChannel(), player.getId(), player.getName());
                         } else {
                             Connection con = DatabaseConnection.getConnection();
-                            PreparedStatement ps = con.prepareStatement("SELECT COUNT(*) as buddyCount FROM buddies WHERE characterid = ? AND pending = 0");
+                            PreparedStatement ps = con.prepareStatement("SELECT COUNT(*) as buddyCount FROM buddies WHERE characterId = ? AND pending = 0");
                             ps.setInt(1, charWithId.getId());
                             ResultSet rs = ps.executeQuery();
                             if (!rs.next()) {
@@ -119,7 +119,7 @@ public class BuddylistModifyHandler extends AbstractMaplePacketHandler {
                             }
                             rs.close();
                             ps.close();
-                            ps = con.prepareStatement("SELECT pending FROM buddies WHERE characterid = ? AND buddyid = ?");
+                            ps = con.prepareStatement("SELECT pending FROM buddies WHERE characterId = ? AND buddyId = ?");
                             ps.setInt(1, charWithId.getId());
                             ps.setInt(2, player.getId());
                             rs = ps.executeQuery();
@@ -139,7 +139,7 @@ public class BuddylistModifyHandler extends AbstractMaplePacketHandler {
                                 notifyRemoteChannel(c, channel, otherCid, ADDED);
                             } else if (buddyAddResult != BuddyAddResult.ALREADY_ON_LIST && channel == -1) {
                                 Connection con = DatabaseConnection.getConnection();
-                                PreparedStatement ps = con.prepareStatement("INSERT INTO buddies (characterid, `buddyid`, `pending`) VALUES (?, ?, 1)");
+                                PreparedStatement ps = con.prepareStatement("INSERT INTO buddies (characterId, `buddyId`, `pending`) VALUES (?, ?, 1)");
                                 ps.setInt(1, charWithId.getId());
                                 ps.setInt(2, player.getId());
                                 ps.executeUpdate();

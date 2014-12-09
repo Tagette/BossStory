@@ -27,7 +27,7 @@ public class Magneto extends PowerSkill {
     public void save(MapleCharacter chr) throws SQLException {
         if (getLevel() > 0 || getExp() > 0) {
             Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("INSERT INTO powerskills (characterid, type, exp, level, pickupequips) VALUES (?, ?, ? ,?, ?)");
+            PreparedStatement ps = con.prepareStatement("INSERT INTO powerSkills (characterId, type, exp, level, pickupEquips) VALUES (?, ?, ? ,?, ?)");
             ps.setInt(1, chr.getId());
             ps.setString(2, getType().name());
             ps.setInt(3, getExp());
@@ -41,14 +41,14 @@ public class Magneto extends PowerSkill {
     @Override
     public void load(MapleCharacter chr) throws SQLException {
         Connection con = DatabaseConnection.getConnection();
-        PreparedStatement ps = con.prepareStatement("SELECT exp, level, pickupequips FROM powerskills WHERE characterid = ? AND type = ?");
+        PreparedStatement ps = con.prepareStatement("SELECT exp, level, pickupEquips FROM powerSkills WHERE characterId = ? AND type = ?");
         ps.setInt(1, chr.getId());
         ps.setString(2, type.name());
         ResultSet rs = ps.executeQuery();
         if(rs.next()) {
             exp = rs.getInt("exp");
             setLevel(rs.getInt("level"));
-            pickupEquips = rs.getInt("pickupequips") == 1;
+            pickupEquips = rs.getInt("pickupEquips") == 1;
         }
     }
 

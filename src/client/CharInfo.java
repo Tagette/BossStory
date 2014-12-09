@@ -103,27 +103,27 @@ public class CharInfo {
             rs = ps.executeQuery();
             if(rs.next()){
                 charId = rs.getInt("id");
-                accountId = rs.getInt("accountid");
+                accountId = rs.getInt("accountId");
                 name = rs.getString("name");
                 level = rs.getInt("level");
-                totalLevel = rs.getInt("totallevel");
+                totalLevel = rs.getInt("totalLevel");
                 rebirths = rs.getInt("rebirths");
                 meso = rs.getInt("meso");
                 wealth = rs.getLong("wealth");
                 job = rs.getInt("job");
                 fame = rs.getInt("fame");
-                apPerLevel = rs.getInt("apperlevel");
+                apPerLevel = rs.getInt("apPerLevel");
                 storedAp = rs.getInt("storedAp");
                 gender = rs.getInt("gender");
                 map = Server.getInstance().getChannel((byte)0, (byte)1).getMapFactory().getMap(rs.getInt("map")).getMapName();
                 gm = rs.getInt("gm");
-                canTalk = rs.getInt("cantalk") == 1;
-                expRate = rs.getInt("exprate");
-                mesoRate = rs.getInt("mesorate");
-                dropRate = rs.getInt("droprate");
-                expCards = rs.getInt("lastexpcards");
-                mesoCards = rs.getInt("lastmesocards");
-                dropCards = rs.getInt("lastdropcards");
+                canTalk = rs.getInt("canTalk") == 1;
+                expRate = rs.getInt("expRate");
+                mesoRate = rs.getInt("mesoRate");
+                dropRate = rs.getInt("dropRate");
+                expCards = rs.getInt("lastExpCards");
+                mesoCards = rs.getInt("lastMesoCards");
+                dropCards = rs.getInt("lastDropCards");
                 int world = rs.getInt("world");
                 expTotalRate = (expRate + Server.getInstance().getWorld(world).getExpRate()) * expCards;
                 mesoTotalRate = (mesoRate + Server.getInstance().getWorld(world).getMesoRate()) * mesoCards;
@@ -139,30 +139,30 @@ public class CharInfo {
                 //    ps2.close();
                 //} else
                 partnerName = "None";
-                if(rs.getString("previousnames") != null) {
-                    previousNames = makeReadablePreviousNames(rs.getString("previousnames"));
+                if(rs.getString("previousNames") != null) {
+                    previousNames = makeReadablePreviousNames(rs.getString("previousNames"));
                 } else {
                     previousNames = "None";
                 }
-                int guildId = rs.getInt("guildid");
-                int guildRankId = rs.getInt("guildrank");
-                ps2 = DatabaseConnection.getConnection().prepareStatement("SELECT name, rank1title, rank2title, rank3title, rank4title, rank5title FROM guilds WHERE guildid = ?");
+                int guildId = rs.getInt("guildId");
+                int guildRankId = rs.getInt("guildRank");
+                ps2 = DatabaseConnection.getConnection().prepareStatement("SELECT name, rank1Title, rank2Title, rank3Title, rank4Title, rank5Title FROM guilds WHERE guildId = ?");
                 ps2.setInt(1, guildId);
                 rs2 = ps2.executeQuery();
                 if(rs2.next()){
                     guild = rs2.getString("name");
                     switch(guildRankId){
                         case 1:
-                            guildRank = rs2.getString("rank1title")+" ("+guildRankId+")";
+                            guildRank = rs2.getString("rank1Title")+" ("+guildRankId+")";
                             break;
                         case 2:
-                            guildRank = rs2.getString("rank2title")+" ("+guildRankId+")";
+                            guildRank = rs2.getString("rank2Title")+" ("+guildRankId+")";
                             break;
                         case 3:
-                            guildRank = rs2.getString("rank3title")+" ("+guildRankId+")";
+                            guildRank = rs2.getString("rank3Title")+" ("+guildRankId+")";
                             break;
                         case 4:
-                            guildRank = rs2.getString("rank4title")+" ("+guildRankId+")";
+                            guildRank = rs2.getString("rank4Title")+" ("+guildRankId+")";
                             break;
                         case 5:
                             guildRank = rs2.getString("rank5title")+" ("+guildRankId+")";
@@ -177,7 +177,7 @@ public class CharInfo {
                 rs2.close();
                 ps2.close();
 
-                ps2 = con.prepareStatement("SELECT COUNT(*) FROM buddies WHERE characterid = ?");
+                ps2 = con.prepareStatement("SELECT COUNT(*) FROM buddies WHERE characterId = ?");
                 ps2.setInt(1, charId);
                 rs2 = ps2.executeQuery();
                 if(rs2.next())
@@ -191,21 +191,19 @@ public class CharInfo {
                 ps2.setInt(1, accountId);
                 rs2 = ps2.executeQuery();
                 if(rs2.next()) {
-                    Timestamp ts = rs2.getTimestamp("lastlogin");
+                    Timestamp ts = rs2.getTimestamp("lastLogin");
                     lastLogin = convertLastLogin(ts);
-                    //lastLogin = null;
-                    ts = rs2.getTimestamp("createdat");
+                    ts = rs2.getTimestamp("createDate");
                     createDate = convertCreateDate(ts);
-                    //createDate = null;
                     donation = rs2.getInt("donation");
                     nxCash = rs2.getInt("nxCredit");
                     banned = rs2.getInt("banned") == 1;
-                    votePoints = rs2.getInt("votepoints");
+                    votePoints = rs2.getInt("votePoints");
                 }
                 rs2.close();
                 ps2.close();
                 
-                ps2 = con.prepareStatement("SELECT type, exp, level FROM powerskills WHERE characterid = ?");
+                ps2 = con.prepareStatement("SELECT type, exp, level FROM powerSkills WHERE characterId = ?");
                 ps2.setInt(1, charId);
                 rs2 = ps2.executeQuery();
 

@@ -56,7 +56,7 @@ public class MaplePet extends Item {
     public static MaplePet loadFromDb(int itemid, byte position, int petid) {
         try {
             MaplePet ret = new MaplePet(itemid, position, petid);
-            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT name, level, closeness, fullness, summoned FROM pets WHERE petid = ?"); // Get pet details..
+            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT name, level, closeness, fullness, summoned FROM pets WHERE petId = ?"); // Get pet details..
             ps.setInt(1, petid);
             ResultSet rs = ps.executeQuery();
             rs.next();
@@ -75,7 +75,7 @@ public class MaplePet extends Item {
 
     public void saveToDb() {
         try {
-            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("UPDATE pets SET name = ?, level = ?, closeness = ?, fullness = ?, summoned = ? WHERE petid = ?");
+            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("UPDATE pets SET name = ?, level = ?, closeness = ?, fullness = ?, summoned = ? WHERE petId = ?");
             ps.setString(1, getName());
             ps.setInt(2, getLevel());
             ps.setInt(3, getCloseness());
@@ -90,7 +90,7 @@ public class MaplePet extends Item {
     
     public void removeFromDb(){
         try {
-            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("DELETE FROM pets WHERE petid = ?");
+            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("DELETE FROM pets WHERE petId = ?");
             ps.setInt(1, getUniqueId());
             ps.executeUpdate();
             ps.close();

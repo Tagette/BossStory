@@ -62,10 +62,10 @@ public enum ItemFactory {
             ResultSet rs = null;
             try {
 		StringBuilder query = new StringBuilder();
-		query.append("SELECT * FROM `inventoryitems` LEFT JOIN `inventoryequipment` USING(`inventoryitemid`) WHERE `type` = ? AND `");
+		query.append("SELECT * FROM `inventoryItems` LEFT JOIN `inventoryEquipment` USING(`inventoryItemId`) WHERE `type` = ? AND `");
 		query.append(account ? "accountid" : "characterid").append("` = ?");
               
-		if (login) query.append(" AND `inventorytype` = ").append(MapleInventoryType.EQUIPPED.getType());
+		if (login) query.append(" AND `inventoryType` = ").append(MapleInventoryType.EQUIPPED.getType());
 		
                 
 		ps = DatabaseConnection.getConnection().prepareStatement(query.toString());
@@ -74,10 +74,10 @@ public enum ItemFactory {
 		rs = ps.executeQuery();
 
 		while (rs.next()) {
-                    MapleInventoryType mit = MapleInventoryType.getByType(rs.getByte("inventorytype"));
+                    MapleInventoryType mit = MapleInventoryType.getByType(rs.getByte("inventoryType"));
 
                     if (mit.equals(MapleInventoryType.EQUIP) || mit.equals(MapleInventoryType.EQUIPPED)) {
-                        Equip equip = new Equip(rs.getInt("itemid"), (byte) rs.getInt("position"));
+                        Equip equip = new Equip(rs.getInt("itemId"), (byte) rs.getInt("position"));
                         equip.setOwner(rs.getString("owner"));
                         equip.setQuantity((short) rs.getInt("quantity"));
                         equip.setAcc((short) rs.getInt("acc"));
@@ -97,16 +97,16 @@ public enum ItemFactory {
                         equip.setStr((short) rs.getInt("str"));
                         equip.setWatk((short) rs.getInt("watk"));
                         equip.setWdef((short) rs.getInt("wdef"));
-                        equip.setUpgradeSlots((byte) rs.getInt("upgradeslots"));
+                        equip.setUpgradeSlots((byte) rs.getInt("upgradeSlots"));
                         equip.setLevel((byte) rs.getByte("level"));
-                        equip.setItemExp(rs.getInt("itemexp"));
-                        equip.setItemLevel(rs.getByte("itemlevel"));
+                        equip.setItemExp(rs.getInt("itemExp"));
+                        equip.setItemLevel(rs.getByte("itemLevel"));
                         equip.setExpiration(rs.getLong("expiration"));
                         equip.setGiftFrom(rs.getString("giftFrom"));
-                        equip.setRingId(rs.getInt("ringid"));
+                        equip.setRingId(rs.getInt("ringId"));
 				items.add(new Pair<IItem, MapleInventoryType>(equip, mit));
 			} else {
-                        Item item = new Item(rs.getInt("itemid"), (byte) rs.getInt("position"), (short) rs.getInt("quantity"), rs.getInt("petid"));
+                        Item item = new Item(rs.getInt("itemId"), (byte) rs.getInt("position"), (short) rs.getInt("quantity"), rs.getInt("petId"));
                         item.setOwner(rs.getString("owner"));
                         item.setExpiration(rs.getLong("expiration"));
                         item.setGiftFrom(rs.getString("giftFrom"));
@@ -129,16 +129,16 @@ public enum ItemFactory {
             PreparedStatement pse = null;
             try {
                 StringBuilder query = new StringBuilder();
-                query.append("DELETE FROM `inventoryitems` WHERE `type` = ? AND `");
-                query.append(account ? "accountid" : "characterid").append("` = ?");
+                query.append("DELETE FROM `inventoryItems` WHERE `type` = ? AND `");
+                query.append(account ? "accountId" : "characterId").append("` = ?");
                 Connection con = DatabaseConnection.getConnection();
                 ps = con.prepareStatement(query.toString());
                 ps.setInt(1, value);
                 ps.setInt(2, id);
                 ps.executeUpdate();
                 ps.close();
-                ps = con.prepareStatement("INSERT INTO `inventoryitems` VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-                pse = con.prepareStatement("INSERT INTO `inventoryequipment` VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                ps = con.prepareStatement("INSERT INTO `inventoryItems` VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+                pse = con.prepareStatement("INSERT INTO `inventoryEquipment` VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
                 for (Pair<IItem, MapleInventoryType> pair : items) {
                     IItem item = pair.getLeft();

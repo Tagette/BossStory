@@ -45,7 +45,7 @@ public class MakerItemFactory {
         } else {
             try {
                 Connection con = DatabaseConnection.getConnection();
-                PreparedStatement ps = con.prepareStatement("SELECT req_level, req_maker_level, req_meso, quantity FROM makercreatedata WHERE itemid = ?");
+                PreparedStatement ps = con.prepareStatement("SELECT reqLevel, reqMakerLevel, reqMeso, quantity FROM makerCreateData WHERE itemId = ?");
                 ps.setInt(1, toCreate);
                 ResultSet rs = ps.executeQuery();
                 int reqLevel = 0;
@@ -53,19 +53,19 @@ public class MakerItemFactory {
                 int cost = 0;
                 int toGive = 0;
                 if (rs.next()) {
-                    reqLevel = rs.getInt("req_level");
-                    reqMakerLevel = rs.getInt("req_maker_level");
-                    cost = rs.getInt("req_meso");
+                    reqLevel = rs.getInt("reqLevel");
+                    reqMakerLevel = rs.getInt("reqMakerLevel");
+                    cost = rs.getInt("reqMeso");
                     toGive = rs.getInt("quantity");
                 }
                 ps.close();
                 rs.close();
                 MakerItemCreateEntry ret = new MakerItemCreateEntry(cost, reqLevel, reqMakerLevel, toGive);
-                ps = con.prepareStatement("SELECT req_item, count FROM makerrecipedata WHERE itemid = ?");
+                ps = con.prepareStatement("SELECT reqItem, count FROM makerRecipeData WHERE itemId = ?");
                 ps.setInt(1, toCreate);
                 rs = ps.executeQuery();
                 while (rs.next()) {
-                    ret.addReqItem(rs.getInt("req_item"), rs.getInt("count"));
+                    ret.addReqItem(rs.getInt("reqItem"), rs.getInt("count"));
                 }
                 rs.close();
                 ps.close();

@@ -38,11 +38,11 @@ public class MapleFamily {
 
     public MapleFamily(int cid) {
         try {
-            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT familyid FROM family_character WHERE cid = ?");
+            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT familyid FROM familyCharacter WHERE cid = ?");
             ps.setInt(1, cid);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                this.id = rs.getInt("familyid");
+                this.id = rs.getInt("familyId");
             }
             ps.close();
             rs.close();
@@ -53,7 +53,7 @@ public class MapleFamily {
 
     public static void getMapleFamily() {
         try {
-            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM family_character WHERE familyid = ?");
+            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM familyCharacter WHERE familyId = ?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -61,10 +61,10 @@ public class MapleFamily {
                 ret.setFamilyId(id);
                 ret.setRank(rs.getInt("rank"));
                 ret.setReputation(rs.getInt("reputation"));
-                ret.setTotalJuniors(rs.getInt("totaljuniors"));
+                ret.setTotalJuniors(rs.getInt("totalJuniors"));
                 ret.setFamilyName(rs.getString("name"));
-                ret.setJuniors(rs.getInt("juniorsadded"));
-                ret.setTodaysRep(rs.getInt("todaysrep"));
+                ret.setJuniors(rs.getInt("juniorsAdded"));
+                ret.setTodaysRep(rs.getInt("todaysRep"));
                 int cid = rs.getInt("cid");
                 ret.setChrId(cid);
                 members.put(cid, ret);

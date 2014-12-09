@@ -217,15 +217,15 @@ public class MapleShop {
             Connection con = DatabaseConnection.getConnection();
             PreparedStatement ps;
             if (isShopId) {
-                ps = con.prepareStatement("SELECT * FROM shops WHERE shopid = ?");
+                ps = con.prepareStatement("SELECT * FROM shops WHERE shopId = ?");
             } else {
-                ps = con.prepareStatement("SELECT * FROM shops WHERE npcid = ?");
+                ps = con.prepareStatement("SELECT * FROM shops WHERE npcId = ?");
             }
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                shopId = rs.getInt("shopid");
-                ret = new MapleShop(shopId, rs.getInt("npcid"));
+                shopId = rs.getInt("shopId");
+                ret = new MapleShop(shopId, rs.getInt("npcId"));
                 rs.close();
                 ps.close();
             } else {
@@ -233,19 +233,19 @@ public class MapleShop {
                 ps.close();
                 return null;
             }
-            ps = con.prepareStatement("SELECT * FROM shopitems WHERE shopid = ? ORDER BY position ASC");
+            ps = con.prepareStatement("SELECT * FROM shopItems WHERE shopId = ? ORDER BY position ASC");
             ps.setInt(1, shopId);
             rs = ps.executeQuery();
             List<Integer> recharges = new ArrayList<Integer>(rechargeableItems);
             while (rs.next()) {
-                if (ItemConstants.isRechargable(rs.getInt("itemid"))) {
-                    MapleShopItem starItem = new MapleShopItem((short) 1, rs.getInt("itemid"), rs.getInt("price"), rs.getInt("pitch"));
+                if (ItemConstants.isRechargable(rs.getInt("itemId"))) {
+                    MapleShopItem starItem = new MapleShopItem((short) 1, rs.getInt("itemId"), rs.getInt("price"), rs.getInt("pitch"));
                     ret.addItem(starItem);
                     if (rechargeableItems.contains(starItem.getItemId())) {
                         recharges.remove(Integer.valueOf(starItem.getItemId()));
                     }
                 } else {
-                    ret.addItem(new MapleShopItem((short) 1000, rs.getInt("itemid"), rs.getInt("price"), rs.getInt("pitch")));
+                    ret.addItem(new MapleShopItem((short) 1000, rs.getInt("itemId"), rs.getInt("price"), rs.getInt("pitch")));
                 }
             }
             for (Integer recharge : recharges) {

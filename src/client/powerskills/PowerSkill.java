@@ -32,7 +32,7 @@ public class PowerSkill {
     public void save(MapleCharacter chr) throws SQLException {
         if (getLevel() > 0 || getExp() > 0) {
             Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("INSERT INTO powerskills (characterid, type, exp, level) VALUES (?, ?, ? ,?)");
+            PreparedStatement ps = con.prepareStatement("INSERT INTO powerSkills (characterId, type, exp, level) VALUES (?, ?, ? ,?)");
             ps.setInt(1, chr.getId());
             ps.setString(2, getType().name());
             ps.setInt(3, getExp());
@@ -44,7 +44,7 @@ public class PowerSkill {
     
     public void load(MapleCharacter chr) throws SQLException {
             Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT exp, level FROM powerskills WHERE characterid = ? AND type = ?");
+            PreparedStatement ps = con.prepareStatement("SELECT exp, level FROM powerSkills WHERE characterId = ? AND type = ?");
             ps.setInt(1, chr.getId());
             ps.setString(2, type.name());
             ResultSet rs = ps.executeQuery();

@@ -125,10 +125,10 @@ public class Server {
             }
             try{
                 Connection c = DatabaseConnection.getConnection();
-                PreparedStatement ps = c.prepareStatement("UPDATE accounts SET loggedin = 0");
+                PreparedStatement ps = c.prepareStatement("UPDATE accounts SET loggedIn = 0");
                 ps.executeUpdate();
                 ps.close();
-                ps = c.prepareStatement("UPDATE characters SET HasMerchant = 0");
+                ps = c.prepareStatement("UPDATE characters SET hasMerchant = 0");
                 ps.executeUpdate();
                 ps.close();
             } catch(SQLException se){
@@ -148,12 +148,12 @@ public class Server {
                     System.out.println("Starting world " + i);
                     World world = new World(i,
                             Byte.parseByte(p.getProperty("flag" + i)),
-                            p.getProperty("eventmessage" + i),
-                            Short.parseShort(p.getProperty("exprate" + i)),
-                            Short.parseShort(p.getProperty("droprate" + i)),
-                            Short.parseShort(p.getProperty("mesorate" + i)),
-                            Short.parseShort(p.getProperty("bossdroprate" + i)),
-                            Short.parseShort(p.getProperty("nxrate" + i)));
+                            p.getProperty("eventMessage" + i),
+                            Short.parseShort(p.getProperty("expRate" + i)),
+                            Short.parseShort(p.getProperty("dropRate" + i)),
+                            Short.parseShort(p.getProperty("mesoRate" + i)),
+                            Short.parseShort(p.getProperty("bossDropRate" + i)),
+                            Short.parseShort(p.getProperty("nxRate" + i)));
                     worlds.add(world);
                     channels.add(new LinkedHashMap<Byte, String>());
                     load.add(new LinkedHashMap<Byte, AtomicInteger>());
@@ -197,7 +197,7 @@ public class Server {
             try {
                 // Register PlayerNPC's
                 Connection c = DatabaseConnection.getConnection();
-                PreparedStatement ps = c.prepareStatement("SELECT * FROM playernpcs");
+                PreparedStatement ps = c.prepareStatement("SELECT * FROM playerNpcs");
                 ResultSet rs = ps.executeQuery();
                 while(rs.next()){
                     PlayerNPC pn = new PlayerNPC(rs);

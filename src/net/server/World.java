@@ -214,7 +214,7 @@ public class World {
 
     public void setOfflineGuildStatus(int guildid, byte guildrank, int cid) {
         try {
-            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("UPDATE characters SET guildid = ?, guildrank = ? WHERE id = ?");
+            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("UPDATE characters SET guildId = ?, guildRank = ? WHERE id = ?");
             ps.setInt(1, guildid);
             ps.setInt(2, guildrank);
             ps.setInt(3, cid);

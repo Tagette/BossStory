@@ -60,13 +60,13 @@ public class PlayerNPC extends AbstractMapleMapObject {
             RX0 = rs.getInt("rx0");
             RX1 = rs.getInt("rx1");
             dir = rs.getInt("dir");
-            npcId = rs.getInt("ScriptId");
+            npcId = rs.getInt("scriptId");
             setPosition(new Point(rs.getInt("x"), CY));
-            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT equippos, equipid FROM playernpcs_equip WHERE NpcId = ?");
+            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT equipPos, equipId FROM playerNpcsEquip WHERE npcId = ?");
             ps.setInt(1, rs.getInt("id"));
             ResultSet rs2 = ps.executeQuery();
             while (rs2.next()) {
-                equips.put(rs2.getByte("equippos"), rs2.getInt("equipid"));
+                equips.put(rs2.getByte("equipPos"), rs2.getInt("equipId"));
             }
             rs2.close();
             ps.close();
@@ -163,13 +163,13 @@ public class PlayerNPC extends AbstractMapleMapObject {
         boolean ret = true;
         try {
             Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT id FROM playernpcs WHERE ScriptId = ?");
+            PreparedStatement ps = con.prepareStatement("SELECT id FROM playerNpcs WHERE scriptId = ?");
             ps.setInt(1, scriptId);
             ResultSet rs = ps.executeQuery();
             if (!rs.next()) {
                 rs.close();
                 ps = con.prepareStatement(
-                        "INSERT INTO playernpcs (name, hair, face, skin, x, cy, dir, map, ScriptId, Foothold, rx0, rx1) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        "INSERT INTO playerNpcs (name, hair, face, skin, x, cy, dir, map, scriptId, foothold, rx0, rx1) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                         Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, chr.getName());
                 ps.setInt(2, chr.getHair());
@@ -188,7 +188,7 @@ public class PlayerNPC extends AbstractMapleMapObject {
                 rs.next();
                 int npcId = rs.getInt(1);
                 ps.close();
-                ps = con.prepareStatement("INSERT INTO playernpcs_equip (NpcId, equipid, equippos) VALUES (?, ?, ?)");
+                ps = con.prepareStatement("INSERT INTO playerNpcsEquip (npcId, equipId, equipPos) VALUES (?, ?, ?)");
                 ps.setInt(1, npcId);
                 for (IItem equip : chr.getInventory(MapleInventoryType.EQUIPPED)) {
                     int position = Math.abs(equip.getPosition());
@@ -202,7 +202,7 @@ public class PlayerNPC extends AbstractMapleMapObject {
                 ps.executeBatch();
                 ps.close();
                 rs.close();
-                ps = con.prepareStatement("SELECT * FROM playernpcs WHERE ScriptId = ?");
+                ps = con.prepareStatement("SELECT * FROM playerNpcs WHERE scriptId = ?");
                 ps.setInt(1, scriptId);
                 rs = ps.executeQuery();
                 rs.next();

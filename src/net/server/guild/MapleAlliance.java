@@ -71,7 +71,7 @@ public class MapleAlliance {
             alliance.name = rs.getString("name");
             alliance.notice = rs.getString("notice");
             for (int i = 1; i <= 5; i++) {
-                alliance.rankTitles[i - 1] = rs.getString("rank_title" + i);
+                alliance.rankTitles[i - 1] = rs.getString("rankTitle" + i);
             }
             for (int i = 1; i <= 5; i++) {
                 alliance.guilds[i - 1] = rs.getInt("guild" + i);
@@ -88,7 +88,7 @@ public class MapleAlliance {
         sb.append("capacity = ?, ");
         sb.append("notice = ?, ");
         for (int i = 1; i <= 5; i++) {
-            sb.append("rank_title").append(i).append(" = ?, ");
+            sb.append("rankTitle").append(i).append(" = ?, ");
         }
         for (int i = 1; i <= 5; i++) {
             sb.append("guild").append(i).append(" = ?, ");
