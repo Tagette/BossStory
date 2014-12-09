@@ -34,6 +34,9 @@ local.properties
 .target
 .texlipse
 
+# SVN
+.svn/
+
 # OSX
 .DS_Store.DS_Store
 .AppleDouble
