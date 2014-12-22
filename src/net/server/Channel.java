@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import net.MaplePacket;
 import net.MapleServerHandler;
 import net.PacketProcessor;
@@ -100,7 +101,7 @@ public class Channel {
             IoBuffer.setUseDirectBuffer(false);
             IoBuffer.setAllocator(new SimpleBufferAllocator());
             acceptor = new NioSocketAcceptor();
-            TimerManager.getInstance().register(new respawnMaps(), 3000);
+            TimerManager.getInstance().register(respawnMaps, Short.parseShort(ini.getProperty("respawnrate" + world)));
             acceptor.setHandler(new MapleServerHandler(PacketProcessor.getProcessor(), channel, world));
             acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 30);
             acceptor.getFilterChain().addLast("codec", (IoFilter) new ProtocolCodecFilter(new MapleCodecFactory()));
@@ -112,6 +113,8 @@ public class Channel {
             System.out.println("    Channel " + getId() + ": Listening on port " + port);
         } catch (BindException be) {
             System.out.println("    Unable to start channel " + getId() + ". Port already in use.");
+        } catch (NumberFormatException nfe) {
+            System.out.println("    Unable to start channel " + getId() + ". Error in ini file. Type 'setup'.");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -136,6 +139,17 @@ public class Channel {
                 error = true;
             }
         }
+        acceptor.unbind();
+        Runtime.getRuntime().removeShutdownHook(shutdownHook);
+        finishedShutdown = true;
+    }
+    
+    public void forceShutdown() {
+        online = false;
+        for(MapleCharacter chr : players.getAllCharacters()) {
+            chr.getClient().disconnect();
+        }
+        acceptor.unbind();
         Runtime.getRuntime().removeShutdownHook(shutdownHook);
         finishedShutdown = true;
     }

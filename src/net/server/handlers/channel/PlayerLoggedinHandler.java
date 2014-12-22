@@ -231,8 +231,9 @@ public final class PlayerLoggedinHandler extends AbstractMaplePacketHandler {
 
         // ChangeChannel then Warp
         if (c.getPlayer().getNextMap() != -1) {
-            c.getPlayer().changeMap(c.getPlayer().getNextMap(), c.getPlayer().getNextMapPortal());
+            int nextMap = c.getPlayer().getNextMap();
             c.getPlayer().setNextMap(-1);
+            c.getPlayer().changeMap(nextMap, c.getPlayer().getNextMapPortal());
         }
 
         if (player.isGM()) {

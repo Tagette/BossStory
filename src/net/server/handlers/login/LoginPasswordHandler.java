@@ -62,10 +62,10 @@ public final class LoginPasswordHandler implements MaplePacketHandler {
             return;
         }
         if (c.finishLogin() == 0) {
-            c.announce(MaplePacketCreator.getAuthSuccess(c, c.getAccountName()));
             if(c.hasCharactersTaken()) {
-                c.announce(MaplePacketCreator.serverNotice(1, c.getCharactersTaken() + " character(s) have/has been taken from your account. The chararacter(s) should be returned within 24 hours."));
+                c.announce(MaplePacketCreator.serverNotice(1, c.getCharactersTaken() + " character(s) have/has been taken from your account by an admin. The chararacter(s) should be returned within 24 hours."));
             }
+            System.out.println(c.getAccountName() + " has logged in. (" + c.getSession().getRemoteAddress() + ")");
             final MapleClient client = c;
             c.setIdleTask(TimerManager.getInstance().schedule(new Runnable() {
                 public void run() {

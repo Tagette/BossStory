@@ -115,9 +115,9 @@ public class Server {
         try {
             Properties p = new Properties();
             try {
-                p.load(new FileInputStream("moople.ini"));
+                p.load(new FileInputStream("server.ini"));
             } catch (Exception e) {
-                CreateINI.main(null);
+//                CreateINI.main(null);
                 System.exit(0);
             }
             if(System.getProperty("wzpath") == null){
@@ -144,22 +144,23 @@ public class Server {
             tMan.register(new RankingWorker(), ServerConstants.RANKING_INTERVAL);
 
             try {
+                System.out.println("-- " + p.getProperty("servername") + "  Server --");
                 for (byte i = 0; i < Byte.parseByte(p.getProperty("worlds")); i++) {
                     System.out.println("Starting world " + i);
                     World world = new World(i,
                             Byte.parseByte(p.getProperty("flag" + i)),
-                            p.getProperty("eventMessage" + i),
-                            Short.parseShort(p.getProperty("expRate" + i)),
-                            Short.parseShort(p.getProperty("dropRate" + i)),
-                            Short.parseShort(p.getProperty("mesoRate" + i)),
-                            Short.parseShort(p.getProperty("bossDropRate" + i)),
-                            Short.parseShort(p.getProperty("nxRate" + i)));
+                            p.getProperty("eventmessage" + i),
+                            Short.parseShort(p.getProperty("exprate" + i)),
+                            Short.parseShort(p.getProperty("droprate" + i)),
+                            Short.parseShort(p.getProperty("mesorate" + i)),
+                            Short.parseShort(p.getProperty("bossdroprate" + i)),
+                            Short.parseShort(p.getProperty("nxrate" + i)));
                     worlds.add(world);
                     channels.add(new LinkedHashMap<Byte, String>());
                     load.add(new LinkedHashMap<Byte, AtomicInteger>());
                     for (byte j = 0; j < Byte.parseByte(p.getProperty("channels" + i)); j++) {
                         byte channelid = (byte) (j + 1);
-                        Channel channel = new Channel(i, channelid);
+                        Channel channel = new Channel(i, channelid, p);
                         world.addChannel(channel);
                         channels.get(i).put(channelid, channel.getIP());
                         load.get(i).put(channelid, new AtomicInteger());
@@ -167,7 +168,7 @@ public class Server {
                     System.out.println("Finished loading world " + i + ". (" + world.getExpRate() + "x, " + world.getMesoRate() + "x, " + world.getDropRate() + "x)\r\n");
                 }            
             } catch (Exception e) {
-                System.out.println("Error in moople.ini, start CreateINI.bat to re-make the file.");
+                System.out.println("Error in ini file. Type 'setup'.");
                 e.printStackTrace();//For those who get errors
                 System.exit(0);
             }
@@ -216,32 +217,70 @@ public class Server {
             System.out.println("\r\nFailed to start server.");
         }
     }
+    
+    public static void restart() {
+        Server.shutdown();
+        Server.getInstance().start();
+    }
 
     public void shutdown(long time) {
-        final List<World> ws = worlds;
-        final List<Map<Byte, String>> cs = channels;
-        final IoAcceptor ioa = acceptor;
         restartTimer = TimerManager.getInstance().schedule(new Runnable() {
             @Override
             public void run() {
-                for(World w : ws){
-                    w.saveAll();
-                    w.disconnectAll();
-                    for(Channel c : w.getChannels()) {
-                        c.shutdown();
-                    }
-                }
-                shutdown(ioa);
+                shutdown();
             }
         }, time);
     }
-
-    public final void shutdown(IoAcceptor ioa) {
-        TimerManager.getInstance().stop();
-        ioa.unbind();
+    
+    public static void shutdown() {
+        if(instance != null && instance.isOnline()) {
+            for(World w : instance.worlds){
+                w.saveAll();
+                w.disconnectAll();
+                for(Channel c : w.getChannels()) {
+                    c.shutdown();
+                }
+            }
+            instance.acceptor.unbind();
+            TimerManager tman = TimerManager.getInstance();
+            tman.stop();
+            tman.purge();
+            try {
+                DatabaseConnection.release();
+            } catch(SQLException se) { se.printStackTrace(); }
+        }
+        instance.online = false;
         System.out.println("Server offline.");
-        System.exit(0);
+        instance = new Server();
     }
+    
+    public static void forceShutdown() {
+        if(instance != null && instance.isOnline()) {
+            for(World w : instance.worlds){
+                w.disconnectAll();
+                for(Channel c : w.getChannels()) {
+                    c.forceShutdown();
+                }
+            }
+            instance.acceptor.unbind();
+            TimerManager tman = TimerManager.getInstance();
+            tman.stop();
+            tman.purge();
+            try {
+                DatabaseConnection.release();
+            } catch(SQLException se) { se.printStackTrace(); }
+        }
+        instance.online = false;
+        System.out.println("Server offline.");
+        instance = new Server();
+    }
+
+//    public final void shutdown(IoAcceptor ioa) {
+//        TimerManager.getInstance().stop();
+//        ioa.unbind();
+//        System.out.println("Server offline.");
+//        System.exit(0);
+//    }
 
     public Properties getSubnetInfo() {
         return subnetInfo;
