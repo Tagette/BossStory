@@ -18,42 +18,8 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/Tristan/Projects/BossStory/src/client/MapleRing.java</file>
             <file>file:/Users/Tristan/Projects/BossStory/src/net/server/Server.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/server/CashShop.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/server/maps/MapleMapFactory.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/net/server/handlers/channel/BuddylistModifyHandler.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/net/server/handlers/login/ViewCharHandler.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/net/server/guild/MapleGuild.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/net/server/guild/MapleAlliance.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/net/server/World.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/net/server/handlers/channel/FredrickHandler.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/client/MapleFamily.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/client/MapleDisease.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/client/powerskills/PowerSkill.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/client/ItemFactory.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/client/MaplePet.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/client/powerskills/Magneto.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/net/server/handlers/channel/CouponCodeHandler.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/client/CharInfo.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/net/server/handlers/channel/DueyHandler.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/client/MapleClient.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/net/server/handlers/channel/EnterMTSHandler.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/net/server/handlers/channel/BBSOperationHandler.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/server/MapleShop.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/net/server/RankingWorker.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/scripting/npc/NPCConversationManager.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/server/maps/PlayerNPC.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/scripting/event/EventInstanceManager.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/client/MapleCharacter.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/net/server/handlers/channel/NoteActionHandler.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/server/partyquest/MonsterCarnival.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/net/server/handlers/channel/WhisperHandler.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/scripting/reactor/ReactorScriptManager.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/net/server/handlers/channel/MTSHandler.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/client/command/SuperCmd.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/server/MakerItemFactory.java</file>
-            <file>file:/Users/Tristan/Projects/BossStory/src/client/command/GMCmd.java</file>
+            <file>file:/Users/Tristan/Projects/BossStory/src/net/server/Channel.java</file>
         </group>
     </open-files>
 </project-private>

@@ -76,7 +76,7 @@ public class Channel {
         shutdownHook = new Thread() {
             @Override
             public void run() {
-            	System.out.println("Saving Characters...");
+            	System.out.println("Saving channel " + channel + " characters...");
                     for (MapleCharacter mc : getPlayerStorage().getAllCharacters()) {
                         mc.saveToDB(true);
                         if (mc.getHiredMerchant() != null) {
