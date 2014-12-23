@@ -30,7 +30,7 @@ import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public final class ServerlistRequestHandler extends AbstractMaplePacketHandler {
-    private static final String[] names = ServerConstants.WORLD_NAMES;
+    private static final String[] names = ServerConstants.DEFAULT_WORLD_NAMES;
 
     public final void handlePacket(SeekableLittleEndianAccessor slea, MapleClient c) {//FUUUUUUUUUUUUUUU
         Server server = Server.getInstance();
