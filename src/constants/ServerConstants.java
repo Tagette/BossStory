@@ -30,6 +30,8 @@ public class ServerConstants {
     // Login Configuration
     public static final int CHANNEL_LOAD = 150;//Players per channel
     public static final long RANKING_INTERVAL = 3600000;
+    public static final boolean AUTO_REGISTER = true;
+    public static final String[] REGISTER_BLACKLIST = { "admin", "administator", "moderator", "gm", "supergm" };
     public static final boolean ENABLE_PIN = false;
     public static final boolean ENABLE_PIC = true;
     // Channel Configuration

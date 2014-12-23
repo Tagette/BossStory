@@ -21,6 +21,7 @@
 */
 package client;
 
+import constants.ServerConstants;
 import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -39,6 +40,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.script.ScriptEngine;
 import net.MaplePacket;
 import tools.DatabaseConnection;
@@ -452,6 +455,69 @@ public class MapleClient {
             loginattempt = 0;
         }
         return loginok;
+    }
+    
+    public boolean isRegistered() {
+        boolean isRegistered = false;
+        Connection connection = DatabaseConnection.getConnection();
+        try {
+            PreparedStatement ps = connection.prepareStatement("SELECT `id` FROM accounts WHERE name=?");
+            ps.setString(1, accountName);
+            ResultSet rs = ps.executeQuery();
+            isRegistered = rs.next();
+            rs.close();
+            ps.close();
+        } catch(SQLException se) {
+            se.printStackTrace();
+        }
+        return isRegistered;
+    }
+    
+    /**
+     * 
+     * @param login The username the user wishes to register with.
+     * @param password The password the user wishes to register with.
+     * @return Returns 0 if successful.
+     * 0 = Successful registration.
+     * 1 = User name to short. ( 3 or more )
+     * 2 = Invalid characters. ( A-Z a-z 0-9 _ . )
+     * 3 = Name is blacklisted. ( ServerConstants.REGISTER_BLACKLIST )
+     */
+    public int register(String login, String password) {
+        int registerSuccess = 0;
+        if(login.length() < 3) {
+            return 1;
+        }
+        Pattern pattern = Pattern.compile("(?:[^A-Za-z\\._]|\\^)");
+        Matcher matcher = pattern.matcher(login);
+        if(matcher.matches()) {
+            return 2;
+        }
+        for (int i = 0; i < ServerConstants.REGISTER_BLACKLIST.length; i++) {
+            if(login.equalsIgnoreCase(ServerConstants.REGISTER_BLACKLIST[i]))
+            {
+                return 3;
+            }
+        }
+        Connection connection = DatabaseConnection.getConnection();
+        try {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO accounts (name, password) VALUES (?, ?)");
+            ps.setString(1, accountName);
+            
+            String newPwd = password;
+            try {
+                MessageDigest digester = MessageDigest.getInstance("SHA-1");
+                digester.update(password.getBytes("UTF-8"), 0, password.length());
+                newPwd = HexTool.toString(digester.digest()).replace(" ", "").toLowerCase();
+            } catch(Exception e) {}
+            
+            ps.setString(2, newPwd);
+            
+            ps.close();
+        } catch(SQLException se) {
+            se.printStackTrace();
+        }
+        return registerSuccess;
     }
 
     private Calendar getTempBanCalendar(ResultSet rs) throws SQLException {

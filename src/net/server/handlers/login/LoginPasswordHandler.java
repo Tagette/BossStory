@@ -23,9 +23,13 @@ package net.server.handlers.login;
 
 import client.MapleCharacter;
 import client.MapleClient;
+import constants.ServerConstants;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.Calendar;
 import net.MaplePacketHandler;
 import server.TimerManager;
+import tools.DatabaseConnection;
 import tools.DateUtil;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -40,6 +44,19 @@ public final class LoginPasswordHandler implements MaplePacketHandler {
         String login = slea.readMapleAsciiString();
         String pwd = slea.readMapleAsciiString();
         c.setAccountName(login);
+        if(!c.isRegistered() && ServerConstants.AUTO_REGISTER) {
+            int registerOk = c.register(login, pwd);
+            if(registerOk == 0) {
+                System.out.println(login + " has auto registered. (" + c.getSession().getRemoteAddress().toString() + ")");
+                c.announce(MaplePacketCreator.serverNotice(1, (byte) 0, "You have registered as " + login + "."));
+            } else if(registerOk == 1) {
+                c.announce(MaplePacketCreator.serverNotice(1, (byte) 0, "Username must be atleast 3 characters long."));
+                return;
+            } else if(registerOk == 2) {
+                c.announce(MaplePacketCreator.serverNotice(1, (byte) 0, "Username can only contain these characters: A-Z a-z 0-9 _ or ."));
+                return;
+            }
+        }
         final boolean isBanned = c.hasBannedIP() || c.hasBannedMac();
         loginok = c.login(login, pwd, isBanned);
         Calendar tempban = c.getTempBanCalendar();
