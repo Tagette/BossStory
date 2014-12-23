@@ -68,7 +68,7 @@ public class Channel {
     private String channelMessage;
     private Thread shutdownHook;
 
-    public Channel(final byte world, final byte channel) {
+    public Channel(final byte world, final byte channel, Properties ini) {
         this.world = world;
         this.channel = channel;
         this.mapFactory = new MapleMapFactory(MapleDataProviderFactory.getDataProvider(new File(System.getProperty("wzpath") + "/Map.wz")), MapleDataProviderFactory.getDataProvider(new File(System.getProperty("wzpath") + "/String.wz")), world, channel);
@@ -101,6 +101,14 @@ public class Channel {
             IoBuffer.setUseDirectBuffer(false);
             IoBuffer.setAllocator(new SimpleBufferAllocator());
             acceptor = new NioSocketAcceptor();
+            Runnable respawnMaps = new Runnable() {
+                @Override
+                public void run() {
+                    for (Entry<Integer, MapleMap> map : mapFactory.getMaps().entrySet()) {
+                        map.getValue().respawn();
+                    }
+                }
+            };
             TimerManager.getInstance().register(respawnMaps, Short.parseShort(ini.getProperty("respawnrate" + world)));
             acceptor.setHandler(new MapleServerHandler(PacketProcessor.getProcessor(), channel, world));
             acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 30);
@@ -145,7 +153,7 @@ public class Channel {
     }
     
     public void forceShutdown() {
-        online = false;
+        shutdown = true;
         for(MapleCharacter chr : players.getAllCharacters()) {
             chr.getClient().disconnect();
         }

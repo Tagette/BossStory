@@ -56,11 +56,13 @@ public class DatabaseConnection {
         }
 
         private Connection getConnection() {
-            //Fk u nigger
             try {
                 return DriverManager.getConnection(url, user, pass);
             } catch (SQLException sql) {
-                System.out.println("Could not create a SQL Connection object. Please make sure you've correctly configured the database properties inside constants/ServerConstants.java. MAKE SURE YOU COMPILED!");
+                System.out.println("Could not create a SQL Connection object. "
+                        + "Please make sure you've correctly configured the "
+                        + "database properties inside "
+                        + "constants/ServerConstants.java.");
                 return null;
             }
         }
@@ -69,7 +71,7 @@ public class DatabaseConnection {
         public Connection get() {
             Connection con = super.get();
             try {
-                if (!con.isClosed()) {
+                if (con != null && !con.isClosed()) {
                     return con;
                 }
             } catch (SQLException sql) {

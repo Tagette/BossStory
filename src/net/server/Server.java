@@ -120,19 +120,20 @@ public class Server {
 //                CreateINI.main(null);
                 System.exit(0);
             }
-            if(System.getProperty("wzpath") == null){
-                    System.setProperty("wzpath", "wz");
+            if(System.getProperty("wzpath") == null) {
+                System.setProperty("wzpath", "wz");
             }
-            try{
+            try {
                 Connection c = DatabaseConnection.getConnection();
+                if(c == null)
+                    return;
                 PreparedStatement ps = c.prepareStatement("UPDATE accounts SET loggedIn = 0");
                 ps.executeUpdate();
                 ps.close();
                 ps = c.prepareStatement("UPDATE characters SET hasMerchant = 0");
                 ps.executeUpdate();
                 ps.close();
-            } catch(SQLException se){
-
+            } catch(SQLException se) {
             }
             IoBuffer.setUseDirectBuffer(false);
             IoBuffer.setAllocator(new SimpleBufferAllocator());

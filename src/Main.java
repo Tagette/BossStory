@@ -1,6 +1,5 @@
 
 import java.io.FileInputStream;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Scanner;
 import net.server.CreateINI;

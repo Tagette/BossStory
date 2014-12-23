@@ -18,8 +18,12 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/Users/Tristan/Projects/BossStory/src/Main.java</file>
             <file>file:/Users/Tristan/Projects/BossStory/src/net/server/Server.java</file>
+            <file>file:/Users/Tristan/Projects/BossStory/src/console/ServerConsole.java</file>
             <file>file:/Users/Tristan/Projects/BossStory/src/net/server/Channel.java</file>
+            <file>file:/Users/Tristan/Projects/BossStory/src/console/CommandReader.java</file>
+            <file>file:/Users/Tristan/Projects/BossStory/src/tools/MonsterDropCreator.java</file>
         </group>
     </open-files>
 </project-private>
