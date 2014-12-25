@@ -513,6 +513,8 @@ public class MapleClient {
             
             ps.setString(2, newPwd);
             
+            ps.executeUpdate();
+            
             ps.close();
         } catch(SQLException se) {
             se.printStackTrace();
