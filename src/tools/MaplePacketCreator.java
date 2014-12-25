@@ -591,10 +591,9 @@ public class MaplePacketCreator {
      * Gets a successful authentication and PIN Request packet.
      *
      * @param c
-     * @param account The account name.
      * @return The PIN request packet.
      */
-    public static MaplePacket getAuthSuccess(MapleClient c, String account) {
+    public static MaplePacket getAuthSuccess(MapleClient c) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendOpcode.LOGIN_STATUS.getValue());
         mplew.writeInt(0);
@@ -604,7 +603,7 @@ public class MaplePacketCreator {
         mplew.write(0); //admin byte
         mplew.write(0);
         mplew.write(0);
-        mplew.writeMapleAsciiString(account);
+        mplew.writeMapleAsciiString(c.getAccountName());
         mplew.write(0);
         mplew.write(0); //isquietbanned
         mplew.writeLong(0);
