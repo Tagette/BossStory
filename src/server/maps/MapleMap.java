@@ -80,6 +80,7 @@ import server.life.MonsterGlobalDropEntry;
 import server.partyquest.Pyramid;
 import server.quest.MapleQuest;
 import tools.Pair;
+import tools.StringUtil;
 
 public class MapleMap {
 
@@ -353,37 +354,40 @@ public class MapleMap {
         }
 
         final MapleMonsterInformationProvider mi = MapleMonsterInformationProvider.getInstance();
-        List<MonsterDropEntry> dropEntrys = new ArrayList<MonsterDropEntry>(
-                mi.retrieveDrop(mob.getId()));
-
+        final List<MonsterDropEntry> mobDropEntries = mi.retrieveDrop(mob.getId());
+        List<MonsterDropEntry> dropEntrys = new ArrayList<>();
+        dropEntrys.addAll(mobDropEntries);
+        
         // Skinning
-
+        
         Skinning skinning = (Skinning) chr.getPowerSkill(PowerSkillType.SKINNING);
 
         if (skinning.canUse()) {
-            try {
-                int amountSkinned = 0;
-                List<MonsterDropEntry> tmpDropEntrys = new ArrayList<MonsterDropEntry>(dropEntrys);
-                for (MonsterDropEntry entry : dropEntrys) {
-                    if (entry.itemId != 0 && ii.getInventoryType(entry.itemId) == MapleInventoryType.ETC) {
-                        tmpDropEntrys.add(entry);
-                        int skinAmount = skinning.getSkinAmount();
-                        amountSkinned += skinAmount;
-                        for (int i = 0; i < skinAmount; i++) {
-                            tmpDropEntrys.add(new MonsterDropEntry(entry.itemId,
-                                    entry.chance, entry.Minimum, entry.Maximum,
-                                    entry.questid));
+            if(skinning.bossSkinning() || !mob.isBoss()) {
+                try {
+                    int amountSkinned = 0;
+                    List<MonsterDropEntry> tmpDropEntrys = new ArrayList<>(dropEntrys);
+                    for (MonsterDropEntry entry : dropEntrys) {
+                        if (entry.itemId != 0 && ii.getInventoryType(entry.itemId) == MapleInventoryType.ETC) {
+                            tmpDropEntrys.add(entry);
+                            int skinAmount = skinning.getSkinAmount();
+                            amountSkinned += skinAmount;
+                            for (int i = 0; i < skinAmount; i++) {
+                                tmpDropEntrys.add(new MonsterDropEntry(entry.itemId,
+                                        entry.chance, entry.Minimum, entry.Maximum,
+                                        entry.questid));
+                            }
+                        } else {
+                            tmpDropEntrys.add(entry);
                         }
-                    } else {
-                        tmpDropEntrys.add(entry);
                     }
+                    if (amountSkinned > 0) {
+                        chr.addPowerSkillExp(PowerSkillType.SKINNING, amountSkinned);
+                    }
+                    dropEntrys = tmpDropEntrys;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
-                if (amountSkinned > 0) {
-                    chr.addPowerSkillExp(PowerSkillType.SKINNING, amountSkinned);
-                }
-                dropEntrys = tmpDropEntrys;
-            } catch (Exception ex) {
-                ex.printStackTrace();
             }
         }
 
@@ -391,12 +395,12 @@ public class MapleMap {
 
         int numCards = ((int) mob.getStats().getLevel() / 25) + 1;
         for(int i = 0; i < numCards; i++) {
-            dropEntrys.add(new MonsterDropEntry(4031866, 5000, 1, 1, (short) -1));
-            dropEntrys.add(new MonsterDropEntry(4031865, 10000, 1, 1, (short) -1));
+            dropEntrys.add(new MonsterDropEntry(4031866, 3000, 1, 1, (short) -1));
+            dropEntrys.add(new MonsterDropEntry(4031865, 9000, 1, 1, (short) -1));
         }
         
         Collections.shuffle(dropEntrys);
-        for (final MonsterDropEntry de : dropEntrys) {
+        for (MonsterDropEntry de : dropEntrys) {
             if (Randomizer.nextInt(999999) < de.chance * chServerrate) {
                 if (droptype == 3) {
                     pos.x = (int) (mobpos + (d % 2 == 0 ? (40 * (d + 1) / 2)

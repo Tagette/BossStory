@@ -908,13 +908,9 @@ public class GMCmd extends CommandHandler {
     @Description("Does a item vac of the whole map.")
     public void vac() {
         double range = Double.POSITIVE_INFINITY;
-        List<MapleMapObject> items =
-                chr.getMap().getMapObjectsInRange(chr.getPosition(),
-                range, Arrays.asList(MapleMapObjectType.ITEM));
-        for (MapleMapObject item : items) {
-            ItemPickupHandler.pickupItem(client, chr.getPosition(), item, true, false);
-        }
-        chr.message("You have vacuumed " + items.size() + " items.");
+        int count = ItemPickupHandler.vacItems(client, chr, chr.getPosition(), 
+                Integer.MAX_VALUE, range, false).size();
+        chr.message("You have vacuumed " + count + " items.");
     }
 
     @Command
@@ -1069,6 +1065,7 @@ public class GMCmd extends CommandHandler {
                     chr.getPowerSkill(sType).setExp(ExpTable.getSkillExpNeededForLevel(amount));
                     chr.message("Your level for the '" + PowerSkill.getName(sType)
                             + "' power skill has been set to " + amount + ".");
+                    chr.saveToDB(true);
                 }
             } else {
                 chr.message("Power skill '" + args[1] + "' does not exist in command: '" + command + "'");
@@ -1085,6 +1082,7 @@ public class GMCmd extends CommandHandler {
                     if (amount >= 0) {
                         victim.getPowerSkill(sType).setLevel(amount);
                         victim.getPowerSkill(sType).setExp(ExpTable.getSkillExpNeededForLevel(amount));
+                        victim.saveToDB(true);
                         victim.message("Your level for the '" + PowerSkill.getName(sType)
                                 + "' power skill has been set to " + amount + ".");
                         chr.message(victim.getName() + "'s level for the '" + PowerSkill.getName(sType)

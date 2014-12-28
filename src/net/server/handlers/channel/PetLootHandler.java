@@ -31,7 +31,10 @@ import server.maps.MapleMapObject;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 import client.MapleInventoryType;
+import client.powerskills.Magneto;
+import client.powerskills.PowerSkillType;
 import net.server.MaplePartyCharacter;
+import static net.server.handlers.channel.ItemPickupHandler.vacItems;
 import scripting.item.ItemScriptManager;
 import server.MapleItemInformationProvider;
 import server.MapleItemInformationProvider.scriptedItem;
@@ -128,9 +131,23 @@ public final class PetLootHandler extends AbstractMaplePacketHandler {
                     }
                     chr.getMap().broadcastMessage(MaplePacketCreator.removeItemFromMap(mapitem.getObjectId(), 5, chr.getId(), true, chr.getPetIndex(pet)), mapitem.getPosition());
                     chr.getMap().removeMapObject(ob);
-                } else if (MapleInventoryManipulator.addFromDrop(c, mapitem.getItem(), true)) {
-                    chr.getMap().broadcastMessage(MaplePacketCreator.removeItemFromMap(mapitem.getObjectId(), 5, chr.getId(), true, chr.getPetIndex(pet)), mapitem.getPosition());
-                    chr.getMap().removeMapObject(ob);
+                } else if (ItemPickupHandler.pickupItem(c, chr.getPosition(), ob)) {
+                    // Item Vac
+                    if(!chr.getMap().isEventMap()
+                    && !chr.getMap().isOxQuiz()
+                    && !chr.getMap().isTown()) {
+                        Magneto magneto = (Magneto) chr.getPowerSkill(PowerSkillType.MAGNETO);
+                        chr.addPowerSkillExp(PowerSkillType.MAGNETO, 1);
+                        if (magneto.canUse()) {
+                            magneto.use();
+                            int count = vacItems(c, chr, chr.getPosition(), magneto.getVacAmount(), 
+                                    magneto.getVacRange(), magneto.pickupEquips()).size();
+                            chr.addPowerSkillExp(PowerSkillType.MAGNETO, count);
+                        } else if(magneto.getLevel() == 0) {
+                            magneto.use(); // Unlock
+                        }
+                    }
+                    c.announce(MaplePacketCreator.enableActions());
                 } else {
                     return;
                 }

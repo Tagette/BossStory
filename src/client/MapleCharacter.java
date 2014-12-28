@@ -2793,7 +2793,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
             ret.level = rs.getInt("level");
             ret.totalLevel = rs.getInt("totalLevel");
             ret.rebirths = rs.getInt("rebirths");
-            ret.rebirthRanking = rs.getInt("rebirthRanking");
+            ret.rebirthRanking = rs.getInt("rebirthRank");
             ret.fame = rs.getInt("fame");
             ret.str = rs.getInt("str");
             ret.dex = rs.getInt("dex");
@@ -2803,7 +2803,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
             ret.expRate = rs.getInt("expRate");
             ret.mesoRate = rs.getInt("mesoRate");
             ret.dropRate = rs.getInt("dropRate");
-            ret.gachaexp.set(rs.getInt("gachEexp"));
+            ret.gachaexp.set(rs.getInt("gachaExp"));
             ret.hp = rs.getInt("hp");
             ret.maxhp = rs.getInt("maxHp");
             ret.mp = rs.getInt("mp");
@@ -2817,7 +2817,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
             ret.autoAp = rs.getInt("autoAp");
             ret.meso.set(rs.getInt("meso"));
             ret.wealth = rs.getLong("wealth");
-            ret.wealthRanking = rs.getInt("wealthRanking");
+            ret.wealthRanking = rs.getInt("wealthRank");
             ret.merchantmeso = rs.getInt("merchantMesos");
             ret.gmLevel = MapleGroup.getById(rs.getInt("gm"));
             ret.skinColor = MapleSkinColor.getById(rs.getInt("skinColor"));
@@ -3659,7 +3659,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
                 values.put("level", level);
             }
             values.put("rebirths", rebirths);
-            values.put("rebirthRanking", rebirthRanking);
+            values.put("rebirthRank", rebirthRanking);
             values.put("fame", fame);
             values.put("str", str);
             values.put("dex", dex);
@@ -3711,7 +3711,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
                 recalcWealth();
             }
             values.put("wealth", wealth);
-            values.put("wealthRanking", wealthRanking);
+            values.put("wealthRank", wealthRanking);
             values.put("hpMpUsed", hpMpApUsed);
             if (map == null || map.getId() == 610020000
                     || map.getId() == 610020001) {
@@ -3742,7 +3742,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
                 values.put("mountExp", maplemount.getExp());
                 values.put("mountTiredness", maplemount.getTiredness());
             } else {
-                values.put("mountKevel", 1);
+                values.put("mountLevel", 1);
                 values.put("mountExp", 0);
                 values.put("mountTiredness", 0);
             }
@@ -3802,9 +3802,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject {
                 ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             }
 
-            String[] keys = (String[]) values.keySet().toArray();
+            Object[] keys = values.keySet().toArray();
             for (int i = 1; i <= values.size(); i++) {
-                String key = keys[i - 1];
+                String key = (String) keys[i - 1];
                 Object val = values.get(key);
                 if (val instanceof Integer) {
                     ps.setInt(i, (Integer) val);

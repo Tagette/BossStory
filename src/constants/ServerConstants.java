@@ -33,7 +33,7 @@ public class ServerConstants {
     public static final boolean AUTO_REGISTER = true;
     public static final String[] REGISTER_BLACKLIST = { "admin", "administator", "moderator", "gm", "supergm" };
     public static final boolean ENABLE_PIN = false;
-    public static final boolean ENABLE_PIC = true;
+    public static final boolean ENABLE_PIC = false;
     // Channel Configuration
     public static String SERVER_MESSAGE = "";
     public static String RECOMMEND_MESSAGE = "";

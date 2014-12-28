@@ -79,6 +79,7 @@ public final class LoginPasswordHandler implements MaplePacketHandler {
             return;
         }
         if (c.finishLogin() == 0) {
+            c.announce(MaplePacketCreator.getAuthSuccess(c));
             if(c.hasCharactersTaken()) {
                 c.announce(MaplePacketCreator.serverNotice(1, c.getCharactersTaken() + " character(s) have/has been taken from your account by an admin. The chararacter(s) should be returned within 24 hours."));
             }

@@ -43,8 +43,10 @@ public final class ExpTable {
     //private static final int[] skillExp = {0, 1, 15, 34, 57, 92, 135, 372, 560, 840, 1044, 1242, 1573, 2144, 2800, 3640, 4700, 5893, 7360, 9144, 11120, 13477, 16268, 19320, 22880, 27008, 31477, 36600, 42444, 48720, 55813};
 	
     public static int getSkillExpNeededForLevel(int level) {
+        if(level < 1)
+            level = 1;
         if(level > 30)
             level = 30;
-        return (int) exp[level - 1];
+        return (int) exp[level - 1] * 4;
     }
 }

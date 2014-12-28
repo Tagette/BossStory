@@ -23,7 +23,7 @@ public class Politics extends PowerSkill {
 //            Connection con = DatabaseConnection.getConnection();
 //            PreparedStatement ps = con.prepareStatement("INSERT INTO powerskills (characterid, type, exp, level) VALUES (?, ?, ? ,?)");
 //            ps.setInt(1, chr.getId());
-//            ps.setString(2, getType().name());
+//            ps.setInt(2, getType().ordinal());
 //            ps.setInt(3, getExp());
 //            ps.setInt(4, getLevel());
 //            ps.execute();
@@ -36,7 +36,7 @@ public class Politics extends PowerSkill {
 //        Connection con = DatabaseConnection.getConnection();
 //        PreparedStatement ps = con.prepareStatement("SELECT exp, level FROM powerskills WHERE characterid = ? AND type = ?");
 //        ps.setInt(1, chr.getId());
-//        ps.setString(2, type.name());
+//        ps.setInt(2, getType().ordinal());
 //        ResultSet rs = ps.executeQuery();
 //        if(rs.next()) {
 //            exp = rs.getInt("exp");

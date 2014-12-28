@@ -126,11 +126,11 @@ public abstract class AbstractDealDamageHandler extends AbstractMaplePacketHandl
         
         // Skinning
         if(attack.numAttacked > 0) {
-//            Skinning skinning = ((Skinning) player.getPowerSkill(PowerSkillType.SKINNING));
-//            skinning.attack(attack.skill);
-//            if(skinning.attackAllowed()) {
-//                player.addPowerSkillExp(PowerSkillType.SKINNING, attack.numAttacked);
-//            }
+            Skinning skinning = ((Skinning) player.getPowerSkill(PowerSkillType.SKINNING));
+            skinning.attack(attack.skill);
+            if(skinning.attackAllowed()) {
+                player.addPowerSkillExp(PowerSkillType.SKINNING, attack.numAttacked);
+            }
         }
         
         if (attack.skill != 0) {

@@ -31,6 +31,8 @@ import client.powerskills.PowerSkillType;
 import constants.ItemConstants;
 import constants.ServerConstants;
 import java.awt.Point;
+import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import net.AbstractMaplePacketHandler;
@@ -64,51 +66,82 @@ public final class ItemPickupHandler extends AbstractMaplePacketHandler {
         
         if (pickupItem(c, cpos, ob)) {
             // Item Vac
-            Magneto magneto = (Magneto) chr.getPowerSkill(PowerSkillType.MAGNETO);
-            chr.addPowerSkillExp(PowerSkillType.MAGNETO, 1);
-            if (magneto.canUse()) {
-                magneto.use();
-                List<MapleMapObject> items =
-                        chr.getMap().getShuffledMapObjectsInRange(
-                        cpos, magneto.getVacAmount(),
-                        magneto.getVacRange(), Arrays.asList(MapleMapObjectType.ITEM));
-                int pickupInc = 50;
-                if(items.size() > 1000) {
-                    pickupInc = 10;
-                } else if(items.size() > 500) {
-                    pickupInc = 25;
+            if(!chr.getMap().isEventMap()
+            && !chr.getMap().isOxQuiz()
+            && !chr.getMap().isTown()) {
+                Magneto magneto = (Magneto) chr.getPowerSkill(PowerSkillType.MAGNETO);
+                chr.addPowerSkillExp(PowerSkillType.MAGNETO, 1);
+                if (magneto.canUse()) {
+                    magneto.use();
+                    int count = vacItems(c, chr, cpos, magneto.getVacAmount(), 
+                            magneto.getVacRange(), magneto.pickupEquips()).size();
+                    chr.addPowerSkillExp(PowerSkillType.MAGNETO, count);
+                } else if(magneto.getLevel() == 0) {
+                    magneto.use(); // Unlock
                 }
-                int count = 0;
-                for (MapleMapObject item : items) {
-                    final Point fcpos = cpos;
-                    final MapleMapObject fitem = item;
-                    final boolean pickupEquips = magneto.pickupEquips();
-                    TimerManager.getInstance().schedule(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            pickupItem(c, fcpos, fitem, true, pickupEquips);
-                        }
-                        
-                    }, count * pickupInc); // Space the item pickups apart to give a cooler look.
-                    count++;
-//                    if (item instanceof MapleMapItem) {
-//                        ((MapleMapItem) item).setPickedUp(true);
-//                    }
-                }
-                chr.addPowerSkillExp(PowerSkillType.MAGNETO, count);
-            } else if(magneto.getLevel() == 0) {
-                magneto.use(); // Unlock
             }
+            c.announce(MaplePacketCreator.enableActions());
         }
-        c.announce(MaplePacketCreator.enableActions());
+    }
+    
+    public static List<MapleMapObject> vacItems(final MapleClient c, final MapleCharacter chr, final Point characterPos, 
+            final int limit, final double range, final boolean pickupEquips) {
+        return vacItems(c, chr, characterPos, limit, range, pickupEquips, false, 0);
+    }
+    
+    public static List<MapleMapObject> vacItems(final MapleClient c, final MapleCharacter chr, final Point characterPos, 
+            final int limit, final double range, final boolean pickupEquips,
+            boolean pet, int petSlot) {
+        List<MapleMapObject> items =
+            chr.getMap().getShuffledMapObjectsInRange(
+            characterPos, limit,
+            range, Arrays.asList(MapleMapObjectType.ITEM));
+        int pickupInc = 50;
+        if(items.size() > 1000) {
+            pickupInc = 5;
+        } else if(items.size() > 500) {
+            pickupInc = 10;
+        } else if(items.size() > 100) {
+            pickupInc = 25;
+        }
+        int count = 0;
+        for (MapleMapObject item : items) {
+            final Point fcpos = characterPos;
+            final MapleMapObject fitem = item;
+            final int fCount = count;
+            final int fSize = items.size();
+            TimerManager.getInstance().schedule(new Runnable() {
+
+                @Override
+                public void run() {
+                    if(fCount == fSize) {
+
+                    }
+                    pickupItem(c, fcpos, fitem, true, pickupEquips);
+                }
+
+            }, count * pickupInc); // Space the item pickups apart to give a cooler look.
+            count++;
+        }
+        return items;
     }
     
     public static boolean pickupItem(MapleClient c, Point cpos, MapleMapObject ob) {
-        return pickupItem(c, cpos, ob, false, true);
+        return pickupItem(c, cpos, ob, false, true, false, 0);
+    }
+    
+    public static boolean pickupItem(MapleClient c, Point cpos, MapleMapObject ob, 
+            boolean pet, int petSlot) {
+        return pickupItem(c, cpos, ob, false, true, pet, petSlot);
     }
 
-    public static boolean pickupItem(MapleClient c, Point cpos, MapleMapObject ob, boolean skillVac, boolean pickupEquips) {
+    public static boolean pickupItem(MapleClient c, Point cpos, MapleMapObject ob, 
+            boolean skillVac, boolean pickupEquips) {
+        return pickupItem(c, cpos, ob, skillVac, pickupEquips, false, 0);
+    }
+
+    public static boolean pickupItem(MapleClient c, Point cpos, MapleMapObject ob, 
+            boolean skillVac, boolean pickupEquips, boolean pet, int petSlot) {
         if(c == null || c.getPlayer() == null)
             return false;
         MapleCharacter chr = c.getPlayer();
@@ -116,19 +149,28 @@ public final class ItemPickupHandler extends AbstractMaplePacketHandler {
             int itemid = ((MapleMapItem) ob).getItemId();
             if (chr.getMapId() > 209000000 && chr.getMapId() < 209000016) {//happyville trees
                 MapleMapItem mapitem = (MapleMapItem) ob;
-                if (mapitem.getDropper().getObjectId() == c.getPlayer().getObjectId()) {
-                    if (MapleInventoryManipulator.addFromDrop(c, mapitem.getItem(), false)) {
-                        chr.getMap().broadcastMessage(MaplePacketCreator.removeItemFromMap(mapitem.getObjectId(), 2, chr.getId()), mapitem.getPosition());
-                        chr.getMap().removeMapObject(ob);
+                if(!mapitem.isPickedUp()) {
+                    if (mapitem.getDropper().getObjectId() == c.getPlayer().getObjectId()) {
+                        if (MapleInventoryManipulator.addFromDrop(c, mapitem.getItem(), false)) {
+                            if(pet) {
+                                chr.getMap().broadcastMessage(MaplePacketCreator.removeItemFromMap(mapitem.getObjectId(), 2, chr.getId(), pet, petSlot), mapitem.getPosition());
+                            } else {
+                                chr.getMap().broadcastMessage(MaplePacketCreator.removeItemFromMap(mapitem.getObjectId(), 2, chr.getId()), mapitem.getPosition());
+                            }
+                            chr.getMap().removeMapObject(ob);
+                        } else {
+                            c.announce(MaplePacketCreator.enableActions());
+                            return false;
+                        }
+                        mapitem.setPickedUp(true);
                     } else {
+                        System.out.println("That item is not yours.");
                         c.announce(MaplePacketCreator.enableActions());
                         return false;
                     }
-                    mapitem.setPickedUp(true);
                 } else {
-                    System.out.println("That item is not yours.");
-                    c.announce(MaplePacketCreator.getInventoryFull());
-                    c.announce(MaplePacketCreator.getShowInventoryFull());
+                    c.announce(MaplePacketCreator.enableActions());
+                    // Already picked up.
                     return false;
                 }
                 c.announce(MaplePacketCreator.enableActions());
@@ -136,8 +178,7 @@ public final class ItemPickupHandler extends AbstractMaplePacketHandler {
             }
             if (ob == null) {
                 System.out.println("MapleMapItem was null.");
-                c.announce(MaplePacketCreator.getInventoryFull());
-                c.announce(MaplePacketCreator.getShowInventoryFull());
+                c.announce(MaplePacketCreator.enableActions());
                 return false;
             }
             if (ob instanceof MapleMapItem) {
@@ -146,8 +187,6 @@ public final class ItemPickupHandler extends AbstractMaplePacketHandler {
                     // Stop item vac from sucking items that were dropped by a player.
                     // Stop equips from flooding the players equip inventory.
                     if(mapitem.isPlayerDrop() && skillVac || (!pickupEquips && mapitem.getMeso() <= 0 && MapleItemInformationProvider.getInstance().getInventoryType(itemid) == MapleInventoryType.EQUIP)){
-                        System.out.println("Don't pickup equips in vac.");
-//                        c.announce(MaplePacketCreator.showItemUnavailable());
                         c.announce(MaplePacketCreator.enableActions());
                         return false;
                     }
@@ -158,16 +197,13 @@ public final class ItemPickupHandler extends AbstractMaplePacketHandler {
                         return true;
                     }
                     if (mapitem.getQuest() > 0 && !chr.needQuestItem(mapitem.getQuest(), mapitem.getItemId())) {
-                        System.out.println("Removed quest item on pickup.");
                         chr.getMap().removeMapObject(ob);
                         c.announce(MaplePacketCreator.showItemUnavailable());
                         c.announce(MaplePacketCreator.enableActions());
                         return false;
                     }
                     if (mapitem.isPickedUp()) {
-                        System.out.println("Already picked up.");
-                        c.announce(MaplePacketCreator.getInventoryFull());
-                        c.announce(MaplePacketCreator.getShowInventoryFull());
+                        c.announce(MaplePacketCreator.enableActions());
                         return false;
                     }
                     final double Distance = cpos.distanceSq(mapitem.getPosition());
@@ -236,7 +272,14 @@ public final class ItemPickupHandler extends AbstractMaplePacketHandler {
                         return false;
                     }
                     mapitem.setPickedUp(true);
-                    chr.getMap().broadcastMessage(MaplePacketCreator.removeItemFromMap(mapitem.getObjectId(), 2, chr.getId()), mapitem.getPosition());
+                    if(pet) {
+                        chr.getMap().broadcastMessage(MaplePacketCreator.removeItemFromMap(
+                                mapitem.getObjectId(), 2, chr.getId(), pet, petSlot), 
+                                mapitem.getPosition());
+                    } else {
+                        chr.getMap().broadcastMessage(MaplePacketCreator.removeItemFromMap(
+                                mapitem.getObjectId(), 2, chr.getId()), mapitem.getPosition());
+                    }
                     chr.getMap().removeMapObject(ob);
                 }
             }
