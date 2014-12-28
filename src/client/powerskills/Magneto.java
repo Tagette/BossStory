@@ -29,7 +29,7 @@ public class Magneto extends PowerSkill {
             Connection con = DatabaseConnection.getConnection();
             PreparedStatement ps = con.prepareStatement("INSERT INTO powerSkills (characterId, type, exp, level, pickupEquips) VALUES (?, ?, ? ,?, ?)");
             ps.setInt(1, chr.getId());
-            ps.setString(2, getType().name());
+            ps.setInt(2, getType().ordinal());
             ps.setInt(3, getExp());
             ps.setInt(4, getLevel());
             ps.setInt(5, pickupEquips ? 1 : 0);
@@ -43,7 +43,7 @@ public class Magneto extends PowerSkill {
         Connection con = DatabaseConnection.getConnection();
         PreparedStatement ps = con.prepareStatement("SELECT exp, level, pickupEquips FROM powerSkills WHERE characterId = ? AND type = ?");
         ps.setInt(1, chr.getId());
-        ps.setString(2, type.name());
+            ps.setInt(2, getType().ordinal());
         ResultSet rs = ps.executeQuery();
         if(rs.next()) {
             exp = rs.getInt("exp");
