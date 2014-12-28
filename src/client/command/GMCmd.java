@@ -908,13 +908,9 @@ public class GMCmd extends CommandHandler {
     @Description("Does a item vac of the whole map.")
     public void vac() {
         double range = Double.POSITIVE_INFINITY;
-        List<MapleMapObject> items =
-                chr.getMap().getMapObjectsInRange(chr.getPosition(),
-                range, Arrays.asList(MapleMapObjectType.ITEM));
-        for (MapleMapObject item : items) {
-            ItemPickupHandler.pickupItem(client, chr.getPosition(), item, true, false);
-        }
-        chr.message("You have vacuumed " + items.size() + " items.");
+        int count = ItemPickupHandler.vacItems(client, chr, chr.getPosition(), 
+                Integer.MAX_VALUE, range, false).size();
+        chr.message("You have vacuumed " + count + " items.");
     }
 
     @Command
