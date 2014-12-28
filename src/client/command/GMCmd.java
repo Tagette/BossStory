@@ -1065,6 +1065,7 @@ public class GMCmd extends CommandHandler {
                     chr.getPowerSkill(sType).setExp(ExpTable.getSkillExpNeededForLevel(amount));
                     chr.message("Your level for the '" + PowerSkill.getName(sType)
                             + "' power skill has been set to " + amount + ".");
+                    chr.saveToDB(true);
                 }
             } else {
                 chr.message("Power skill '" + args[1] + "' does not exist in command: '" + command + "'");
@@ -1081,6 +1082,7 @@ public class GMCmd extends CommandHandler {
                     if (amount >= 0) {
                         victim.getPowerSkill(sType).setLevel(amount);
                         victim.getPowerSkill(sType).setExp(ExpTable.getSkillExpNeededForLevel(amount));
+                        victim.saveToDB(true);
                         victim.message("Your level for the '" + PowerSkill.getName(sType)
                                 + "' power skill has been set to " + amount + ".");
                         chr.message(victim.getName() + "'s level for the '" + PowerSkill.getName(sType)
