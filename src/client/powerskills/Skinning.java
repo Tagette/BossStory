@@ -66,8 +66,8 @@ public class Skinning extends PowerSkill {
     @Override
     public void setLevel(int set) {
         super.setLevel(set);
-        successChance = level * 0.03f;
-        skinAmount = (int) ((level / 2) + 1);
+        successChance = Math.max(1.0f, level * 0.03f);
+        skinAmount = (int) ((level / 3) + 1);
         koChance = level * 0.005f;
         demiAmount = (level > 19 ? level - 19 : 0);
         demiRange = (level < 30 ? demiAmount * 30000 : Double.POSITIVE_INFINITY);
