@@ -63,7 +63,6 @@ public class Magneto extends PowerSkill {
         useDelay = 9100 - (level * 300);
         vacAmount = (level < 30 ? level * 5 : Short.MAX_VALUE);
         vacRange = (level < 25 ? 15000 * level : Double.POSITIVE_INFINITY);
-        pickupEquips = level < 10;
     }
     
     public int getVacAmount() {
