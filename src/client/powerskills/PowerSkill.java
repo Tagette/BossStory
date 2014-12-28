@@ -18,7 +18,7 @@ public class PowerSkill {
     protected PowerSkillType type;
     protected int exp;
     protected int level;
-    protected float lastUse;
+    protected long lastUse;
     protected int useDelay;
     protected long lastShow;
     protected int deltaExp;
