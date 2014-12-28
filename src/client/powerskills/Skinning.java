@@ -84,9 +84,7 @@ public class Skinning extends PowerSkill {
     }
     
     public void attack(int skillId) {
-        attackAllowed = ServerConstants.isSkinningSkill(skillId) || level >= 25;
-//        if(!attackAllowed)
-//            System.err.println("Skinning attack " + skillId + " not allowed.");
+        attackAllowed = ServerConstants.isSkinningSkill(skillId) || allSkill();
         if(attackAllowed)
             lastAttackTime = System.currentTimeMillis();
     }
